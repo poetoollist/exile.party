@@ -32,16 +32,14 @@ categories:
 
 # ---------------------------------------------------------------------------
 # All URLs below were supplied by the site maintainer.
-# Every site was opened on 2026-09-07 and each description checked against
-# what the tool says about itself. Icons come from each tool's own site or
-# repository; screenshots from its README, its site, or a capture of the
-# site itself.
+# Descriptions for Exile Compass, Scalpel and Exile-UI come from their
+# repositories, read on 2026-09-05. The rest are written from general
+# knowledge of the tool and are worth a skim before launch.
 # ---------------------------------------------------------------------------
 
 tools:
   - id: exile-compass
     name: Exile Compass
-    headline: An overlay that guides you through both campaigns without alt-tabbing
     description: >-
       In-game overlay that tracks campaign progress, imports Path of Building builds, writes regex
       stash searches, times runs, and takes voice commands.
@@ -56,18 +54,11 @@ tools:
     byMaintainer: true
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
+    lastVerified: 2026-09-05
     notes: PoE2 gets the full feature set; PoE1 support is focused on levelling.
-    icon: exile-compass.png
-    screenshots:
-      - campaign-guide.webp
-      - regex.webp
-      - rewards.webp
 
   - id: scalpel
     name: Scalpel
-    author: FrederickFartHammer
-    headline: Edit your loot filter, price check and build regex without leaving the game
     description: >-
       Overlay that edits your loot filter, price checks items, and generates regex without leaving
       the game.
@@ -82,19 +73,11 @@ tools:
     byMaintainer: true
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
-    icon: scalpel.png
-    screenshots:
-      - filter-editor.webp
-      - price-check.webp
-      - dust-explorer.webp
+    lastVerified: 2026-09-05
 
   - id: exile-ui
     name: Exile-UI
-    headline: A minimalist UI and quality-of-life overlay, formerly Lailloken UI
-    description: >-
-      Minimal UI and quality-of-life overlay built with AutoHotkey. Item info with affix tiers, a
-      leveling tracker, map info, stash search strings from your filter, and cheat sheets.
+    description: Minimal UI and quality-of-life overlay, built with AutoHotkey.
     url: https://github.com/Lailloken/Exile-UI
     games: [poe1, poe2]
     category: overlays-and-companions
@@ -105,19 +88,11 @@ tools:
     source: https://github.com/Lailloken/Exile-UI
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
-    screenshots:
-      - map-mods-tldr.webp
-      - stash-search.webp
-      - map-tracker.webp
+    lastVerified: 2026-09-05
 
   - id: sidekick
     name: Sidekick
-    author: domialex and leMicin
-    headline: Price check items and spot dangerous map mods from one overlay
-    description: >-
-      Companion overlay with price check, map mod warnings, a wealth tracker, chat commands, and
-      regex hotkeys.
+    description: Companion overlay with price check, chat commands, and map mod warnings.
     url: https://sidekick-poe.github.io/
     games: [poe1, poe2]
     category: trade
@@ -128,16 +103,10 @@ tools:
     source: https://github.com/Sidekick-Poe/Sidekick
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
-    icon: sidekick.png
-    screenshots:
-      - rare-price-check.webp
-      - map-mods.webp
-      - wealth-tracker.webp
+    lastVerified: 2026-09-05
 
   - id: awakened-poe-trade
     name: Awakened PoE Trade
-    headline: Price check the item under your cursor with one hotkey
     description: Price check overlay that reads the item under your cursor and queries trade.
     url: https://snosme.github.io/awakened-poe-trade/download
     games: [poe1]
@@ -149,19 +118,11 @@ tools:
     source: https://github.com/SnosMe/awakened-poe-trade
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
-    icon: awakened-poe-trade.png
-    screenshots:
-      - gem-price-check.webp
-      - rare-price-check.webp
-      - unique-price-check.webp
+    lastVerified: 2026-09-05
 
   - id: exiled-exchange-2
     name: Exiled Exchange 2
-    headline: Price check the item under your cursor, in a fork of Awakened PoE Trade
-    description: >-
-      Price check overlay forked from Awakened PoE Trade, with the item database and trade queries
-      kept current.
+    description: PoE2 price check overlay, forked from Awakened PoE Trade and kept current.
     url: https://kvan7.github.io/Exiled-Exchange-2/download
     games: [poe2]
     category: trade
@@ -172,17 +133,11 @@ tools:
     source: https://github.com/Kvan7/Exiled-Exchange-2
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
-    icon: exiled-exchange-2.png
-    screenshots:
-      - rare-price-check.webp
-      - unique-price-check.webp
-      - currency-price-check.webp
+    lastVerified: 2026-09-05
 
   - id: path-of-building
     name: Path of Building
     author: Path of Building Community
-    headline: Plan a build offline with the full tree, skills and gear calculated
     description: Offline build planner with full passive tree, skill, and gear calculations.
     url: https://pathofbuilding.community/
     games: [poe1, poe2]
@@ -196,18 +151,11 @@ tools:
       poe2: https://github.com/PathOfBuildingCommunity/PathOfBuilding-PoE2
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
+    lastVerified: 2026-09-05
     notes: PoE1 and PoE2 are separate builds from the same project.
-    icon: path-of-building.png
-    screenshots:
-      - passive-tree.webp
-      - items.webp
-      - power-preview.webp
 
   - id: poe-ninja
     name: poe.ninja
-    author: rasmuskl
-    headline: Currency rates, item prices and build overviews for the current league
     description: League economy tracker with currency rates, item prices, and popular builds.
     url: https://poe.ninja/
     games: [poe1, poe2]
@@ -218,15 +166,10 @@ tools:
     openSource: false
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
-    icon: poe-ninja.png
-    screenshots:
-      - currency.webp
+    lastVerified: 2026-09-05
 
   - id: craft-of-exile
     name: Craft of Exile
-    author: Nebuchenazarr
-    headline: Simulate a craft and see the odds and cost before you spend the currency
     description: Crafting simulator and probability calculator covering every crafting method.
     url: https://www.craftofexile.com/
     urls:
@@ -240,15 +183,11 @@ tools:
     openSource: false
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
-    icon: craft-of-exile.png
-    screenshots:
-      - calculator.webp
+    lastVerified: 2026-09-05
 
   - id: filterblade
     name: FilterBlade
-    author: NeverSink, Zoey and Haggis
-    headline: Customise NeverSink's loot filter with a live preview and export it to the game
+    author: NeverSink
     description: Visual editor for the NeverSink loot filter, with live preview and league presets.
     url: https://www.filterblade.xyz/?game=Poe1
     urls:
@@ -262,15 +201,10 @@ tools:
     openSource: false
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
-    icon: filterblade.png
-    screenshots:
-      - editor.webp
+    lastVerified: 2026-09-05
 
   - id: poedb
     name: PoEDB
-    author: chuanhsing
-    headline: Every item, mod, monster and skill value, straight from the game files
     description: Datamined reference for items, mods, monsters, and skill values, patch by patch.
     url: https://poedb.tw/us/
     games: [poe1]
@@ -281,16 +215,11 @@ tools:
     openSource: false
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
-    icon: poedb.png
-    screenshots:
-      - home.webp
+    lastVerified: 2026-09-05
 
   - id: poe2db
     name: PoE2DB
-    author: chuanhsing
-    headline: Every item, mod, monster and skill value, straight from the game files
-    description: Datamined reference for items, mods, monsters, and skill values, patch by patch.
+    description: Datamined reference for Path of Exile 2 items, mods, monsters, and skill values.
     url: https://poe2db.tw/us/
     games: [poe2]
     category: economy-and-data
@@ -300,15 +229,10 @@ tools:
     openSource: false
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
-    icon: poe2db.png
-    screenshots:
-      - home.webp
+    lastVerified: 2026-09-05
 
   - id: maxroll
     name: Maxroll
-    author: Maxroll
-    headline: Build guides, league starters and planners from an editorial team
     description: Editorial build guides, league starters, and interactive planners.
     url: https://maxroll.gg/poe
     urls:
@@ -322,15 +246,10 @@ tools:
     openSource: false
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
-    icon: maxroll.svg
-    screenshots:
-      - poe-hub.webp
+    lastVerified: 2026-09-05
 
   - id: mobalytics
     name: Mobalytics
-    author: Mobalytics
-    headline: Build guides and a planner, with a paid tier for extras
     description: Build guides and planners for both games, with a free and a paid tier.
     url: https://mobalytics.gg/poe
     urls:
@@ -344,14 +263,10 @@ tools:
     openSource: false
     editorsPick: true
     status: active
-    lastVerified: 2026-09-07
-    icon: mobalytics.png
-    screenshots:
-      - poe-hub.webp
+    lastVerified: 2026-09-05
 
   - id: runeshape-price-checker
     name: RuneshapePriceChecker
-    headline: Colour-coded prices next to every runeshape row, read by OCR
     description: >-
       Overlay that reads the Runes of Aldur runeshape panel with OCR and shows colour-coded prices from
       poe2scout or poe.ninja next to each row.
@@ -362,9 +277,6 @@ tools:
     platforms: [windows]
     pricing: free
     openSource: true
-    source: https://github.com/Barragek0/RuneshapePriceChecker
     status: active
-    lastVerified: 2026-09-07
+    lastVerified: 2026-09-05
     notes: Needs borderless windowed mode and UI brightness above -0.8, or the capture fails.
-    screenshots:
-      - overlay.webp

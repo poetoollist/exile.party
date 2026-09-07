@@ -66,7 +66,7 @@ The catalogue lives in [`tools.yaml`](tools.yaml). Adding a tool is one pull req
 | `author`       | no       | who makes the tool; otherwise the GitHub owner of `source` or `url` is shown                        |
 | `headline`     | no       | one sentence for the tool page, 10 to 120 characters; otherwise the first sentence of `description` |
 | `icon`         | no       | file name under `static/icons/`, `svg`, `png` or `webp`; otherwise a monogram                       |
-| `screenshots`  | no       | list of file names under `static/shots/<id>/`, shown in that order                                  |
+| `screenshots`  | no       | list of `{ file, caption }`; files live under `static/shots/<id>/`                                  |
 | `status`       | yes      | `active`, `unmaintained`, `dead`                                                                    |
 | `lastVerified` | yes      | `YYYY-MM-DD`; entries older than six months are flagged as stale                                    |
 | `notes`        | no       | one caveat worth knowing, up to 300 characters                                                      |
