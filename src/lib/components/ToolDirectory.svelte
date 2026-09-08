@@ -16,7 +16,7 @@
 		toSearchParams,
 		type Filters
 	} from '$lib/catalog/filter';
-	import { groupByCategory, sectionPreview } from '$lib/catalog/home';
+	import { groupBySection, inSection, sections, sectionPreview } from '$lib/catalog/home';
 	import { Platform, type Catalog, type Game } from '$lib/catalog/schema';
 	import { searchPalette } from '$lib/search.svelte';
 	import { submitDialog } from '$lib/submit.svelte';
@@ -62,16 +62,19 @@
 	);
 
 	const visible = $derived(filterTools(pool, filters));
-	const groups = $derived(groupByCategory(catalog.categories, visible));
 
-	/** Every category with a tool in the pool, counted after filters; a filtered-out one stays, dimmed. */
+	/** Start here, then every catalogue category. */
+	const secs = $derived(sections(catalog.categories));
+	const groups = $derived(groupBySection(secs, visible));
+
+	/** Every section with a tool in the pool, counted after filters; a filtered-out one stays, dimmed. */
 	const rail = $derived<RailItem[]>(
-		catalog.categories
-			.filter((c) => pool.some((t) => t.category === c.id))
-			.map((c) => ({
-				id: c.id,
-				name: c.name,
-				count: visible.filter((t) => t.category === c.id).length
+		secs
+			.filter((s) => pool.some((t) => inSection(t, s.id)))
+			.map((s) => ({
+				id: s.id,
+				name: s.name,
+				count: visible.filter((t) => inSection(t, s.id)).length
 			}))
 	);
 

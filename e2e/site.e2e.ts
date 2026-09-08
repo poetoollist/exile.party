@@ -160,6 +160,24 @@ test('the category rail jumps to its section', async ({ page }) => {
 	await expect(page.locator('#cat-trade')).toBeInViewport();
 });
 
+test('Start here leads the directory and the rail reaches it', async ({ page }) => {
+	await page.goto('/tools');
+	await expect(page.locator('main section h2').first()).toHaveText('Start here');
+	await page
+		.getByRole('navigation', { name: 'Categories' })
+		.getByRole('link', { name: /^Start here/ })
+		.click();
+	await expect(page).toHaveURL(/\/tools#cat-start-here$/);
+	await expect(page.locator('#cat-start-here')).toBeInViewport();
+});
+
+test("an editor's pick carries a star on its card", async ({ page }) => {
+	await page.goto('/tools');
+	const first = page.locator('#cat-start-here li').first();
+	await expect(first.getByTitle("Editor's pick")).toBeAttached();
+	await expect(first.getByText("Editor's pick")).toBeAttached();
+});
+
 test('the switch-game link reaches the chooser with the escape-hatch querystring', async ({
 	page
 }) => {

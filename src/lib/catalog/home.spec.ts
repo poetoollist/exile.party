@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
 	countByGame,
-	groupByCategory,
 	groupBySection,
 	inSection,
 	sections,
@@ -50,26 +49,6 @@ const catalog: Catalog = {
 describe('countByGame', () => {
 	it('counts a tool once per game it lists', () => {
 		expect(countByGame(catalog.tools)).toEqual({ poe1: 4, poe2: 5 });
-	});
-});
-
-describe('groupByCategory', () => {
-	const categories = [
-		{ id: 'trade', name: 'Trade' },
-		{ id: 'crafting', name: 'Crafting' },
-		{ id: 'community', name: 'Community' }
-	];
-	const tools = [
-		tool({ id: 'z', name: 'Zeta', category: 'trade' }),
-		tool({ id: 'a', name: 'alpha', category: 'trade' }),
-		tool({ id: 'c', name: 'Craft', category: 'crafting' })
-	];
-
-	it('keeps catalogue order, sorts names inside a group, and drops empty groups', () => {
-		const groups = groupByCategory(categories, tools);
-		expect(groups.map((g) => g.id)).toEqual(['trade', 'crafting']);
-		expect(groups[0].tools.map((t) => t.id)).toEqual(['a', 'z']);
-		expect(groups[0].name).toBe('Trade');
 	});
 });
 

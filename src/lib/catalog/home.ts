@@ -36,19 +36,6 @@ export interface CategoryGroup extends Category {
 	tools: Tool[];
 }
 
-/** Catalogue order, names A to Z inside each group, empty groups dropped. */
-export function groupByCategory(
-	categories: readonly Category[],
-	tools: readonly Tool[]
-): CategoryGroup[] {
-	return categories
-		.map((c) => ({
-			...c,
-			tools: tools.filter((t) => t.category === c.id).sort((a, b) => a.name.localeCompare(b.name))
-		}))
-		.filter((g) => g.tools.length > 0);
-}
-
 /** Section order, `sortTools` inside each, empty sections dropped. A tool appears in every section it belongs to. */
 export function groupBySection(
 	sections: readonly Category[],
