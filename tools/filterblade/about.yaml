@@ -1,0 +1,26 @@
+name: FilterBlade
+author: NeverSink, Zoey and Haggis
+headline: Customise NeverSink's loot filter with a live preview and export it to the game
+description: Visual editor for the NeverSink loot filter, with live preview and
+  league presets.
+url: https://www.filterblade.xyz/?game=Poe1
+urls:
+  poe1: https://www.filterblade.xyz/?game=Poe1
+  poe2: https://www.filterblade.xyz/?game=Poe2
+games:
+  - poe1
+  - poe2
+category: loot-filters
+tags:
+  - editor
+  - preview
+  - presets
+platforms:
+  - web
+pricing: free
+openSource: false
+editorsPick: true
+status: active
+lastVerified: 2026-09-07
+screenshots:
+  - editor.webp

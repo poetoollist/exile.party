@@ -1,9 +1,9 @@
 export const SITE_NAME = 'exile.party';
 export const SITE_TAGLINE = 'Third-party tools for Path of Exile 1 and 2.';
 export const REPO_URL = 'https://github.com/poetoollist/exile.party';
-export const CATALOG_PATH = 'tools.yaml';
-/** GitHub forks the repo automatically when someone without write access saves an edit here. */
-export const EDIT_CATALOG_URL = `${REPO_URL}/edit/main/${CATALOG_PATH}`;
+export const CATALOG_PATH = 'tools/<tool-id>/about.yaml';
+/** GitHub opens a new per-tool metadata file and forks the repo when needed. */
+export const NEW_TOOL_URL = `${REPO_URL}/new/main/tools?filename=your-tool%2Fabout.yaml`;
 export const ISSUE_URL = `${REPO_URL}/issues/new`;
 
 /** Absolute origin, needed because Open Graph tags reject relative image URLs. */

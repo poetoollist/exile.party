@@ -1,0 +1,26 @@
+name: Path of Exile Forums
+author: Grinding Gear Games
+headline: Patch notes, manifestos and the class build-guide subforums, straight from GGG
+description: "The official forums: patch notes, development manifestos,
+  per-class build guide subforums, bug reports and the sequel's early access
+  boards."
+url: https://www.pathofexile.com/forum
+games:
+  - poe1
+  - poe2
+category: community
+tags:
+  - forum
+  - patch-notes
+  - build-guides
+platforms:
+  - web
+pricing: free
+openSource: false
+official: true
+status: active
+lastVerified: 2026-09-08
+notes: Sequel boards live under the Early Access section rather than the class
+  subforums. Posting needs a GGG account.
+screenshots:
+  - forum-index.webp

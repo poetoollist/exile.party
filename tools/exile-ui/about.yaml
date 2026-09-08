@@ -1,0 +1,29 @@
+name: Exile-UI
+headline: A minimalist UI and quality-of-life overlay, formerly Lailloken UI
+description: Minimal UI and quality-of-life overlay built with AutoHotkey. Item
+  info with affix tiers, a leveling tracker, map info, stash search strings from
+  your filter, and cheat sheets.
+url: https://github.com/Lailloken/Exile-UI
+games:
+  - poe1
+  - poe2
+category: overlays-and-companions
+alsoIn:
+  - leveling-and-guides
+  - atlas-and-maps
+tags:
+  - overlay
+  - quality-of-life
+  - autohotkey
+platforms:
+  - windows
+pricing: free
+openSource: true
+source: https://github.com/Lailloken/Exile-UI
+editorsPick: true
+status: active
+lastVerified: 2026-09-07
+screenshots:
+  - map-mods-tldr.webp
+  - stash-search.webp
+  - map-tracker.webp

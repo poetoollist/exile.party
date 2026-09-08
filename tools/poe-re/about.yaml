@@ -1,0 +1,27 @@
+name: poe.re
+author: veiset
+headline: Build a regex for stash and vendor searches, from map mods to scarabs
+  and jewels
+description: Generates regex strings for in-game stash and vendor searches,
+  covering map mods, vendor items, expedition, heist, scarabs, tattoos,
+  runegrafts and jewels.
+url: https://poe.re/
+games:
+  - poe1
+category: regex-and-search
+tags:
+  - regex
+  - map-mods
+  - vendor-search
+platforms:
+  - web
+pricing: free
+openSource: true
+source: https://github.com/veiset/poe.re
+status: active
+lastVerified: 2026-09-08
+notes: The map-mods generator doubles as a dangerous-mod checker through stash
+  search. PoE2 has its own site at poe2.re.
+screenshots:
+  - vendor.webp
+  - map-mods.webp

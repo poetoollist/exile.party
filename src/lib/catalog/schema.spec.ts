@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Catalog, START_HERE_ID, Tool } from './schema';
+import { Catalog, START_HERE_ID, Tool, ToolMetadata } from './schema';
 
 const valid = {
 	id: 'example-tool',
@@ -89,20 +89,25 @@ describe('Tool', () => {
 			...valid,
 			author: 'Example Person',
 			headline: 'Does a useful thing for exiles without leaving the game',
-			icon: 'example-tool.svg',
 			screenshots: ['home.webp']
 		});
 		expect(r.success).toBe(true);
 	});
 
 	it.each([
-		['icon with a path', { ...valid, icon: 'icons/example.svg' }],
-		['icon with a bad extension', { ...valid, icon: 'example.gif' }],
 		['screenshot with a path', { ...valid, screenshots: ['../a.png'] }],
 		['short headline', { ...valid, headline: 'Too short' }],
 		['empty author', { ...valid, author: '' }]
 	])('rejects %s', (_, input) => {
 		expect(Tool.safeParse(input).success).toBe(false);
+	});
+
+	it('keeps the directory-owned id and icon out of about.yaml', () => {
+		const metadata: Record<string, unknown> = { ...valid };
+		delete metadata.id;
+		expect(ToolMetadata.safeParse(metadata).success).toBe(true);
+		expect(ToolMetadata.safeParse({ ...metadata, id: 'duplicated' }).success).toBe(false);
+		expect(ToolMetadata.safeParse({ ...metadata, icon: 'icon.png' }).success).toBe(false);
 	});
 });
 

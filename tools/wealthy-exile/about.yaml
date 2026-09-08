@@ -1,0 +1,22 @@
+name: Wealthy Exile
+headline: Track your stash value and currency per hour without installing anything
+description: Web-based wealth tracker that snapshots your stash, reports
+  currency per hour and breaks value down per tab, alongside shared farming
+  strategies.
+url: https://wealthyexile.com/
+games:
+  - poe1
+category: trade
+tags:
+  - wealth-tracker
+  - stash
+  - farming
+platforms:
+  - web
+pricing: free
+openSource: false
+status: active
+lastVerified: 2026-09-08
+notes: Requires logging in with a pathofexile.com account through OAuth.
+screenshots:
+  - landing.webp

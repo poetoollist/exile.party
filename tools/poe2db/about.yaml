@@ -1,0 +1,22 @@
+name: PoE2DB
+author: chuanhsing
+headline: Every item, mod, monster and skill value, straight from the game files
+description: Datamined reference for items, mods, monsters, and skill values,
+  patch by patch.
+url: https://poe2db.tw/us/
+games:
+  - poe2
+category: economy-and-data
+tags:
+  - datamined
+  - reference
+  - patch-notes
+platforms:
+  - web
+pricing: free
+openSource: false
+editorsPick: true
+status: active
+lastVerified: 2026-09-07
+screenshots:
+  - home.webp

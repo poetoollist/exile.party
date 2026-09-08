@@ -1,0 +1,19 @@
+name: r/pathofexile
+headline: The main subreddit, with patch-note discussion, build showcases and
+  tool announcements
+description: The main subreddit, where patch notes, build showcases, tool
+  announcements and developer replies are discussed.
+url: https://www.reddit.com/r/pathofexile/
+games:
+  - poe1
+category: community
+tags:
+  - reddit
+  - news
+platforms:
+  - web
+pricing: free
+openSource: false
+status: active
+lastVerified: 2026-09-08
+notes: Sequel discussion has largely moved to r/PathOfExile2.

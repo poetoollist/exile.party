@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CATALOG_PATH, EDIT_CATALOG_URL, ISSUE_URL, REPO_URL } from '$lib/site';
+	import { CATALOG_PATH, ISSUE_URL, NEW_TOOL_URL, REPO_URL } from '$lib/site';
 	import { submitDialog } from '$lib/submit.svelte';
 
 	interface Props {
@@ -12,19 +12,18 @@
 	let copied = $state(false);
 	let copyTimer: ReturnType<typeof setTimeout> | undefined;
 
-	const template = `  - id: your-tool
-    name: Your Tool
-    description: One factual sentence, 10 to 300 characters.
-    url: https://example.com
-    games: [poe1, poe2]
-    category: overlays-and-companions
-    tags: [overlay, price-check]
-    platforms: [windows, linux]
-    pricing: free
-    openSource: true
-    source: https://github.com/you/your-tool
-    status: active
-    lastVerified: ${new Date().toISOString().slice(0, 10)}`;
+	const template = `name: Your Tool
+description: One factual sentence, 10 to 300 characters.
+url: https://example.com
+games: [poe1, poe2]
+category: overlays-and-companions
+tags: [overlay, price-check]
+platforms: [windows, linux]
+pricing: free
+openSource: true
+source: https://github.com/you/your-tool
+status: active
+lastVerified: ${new Date().toISOString().slice(0, 10)}`;
 
 	$effect(() => {
 		if (!el) return;
@@ -81,7 +80,7 @@
 
 	<div class="max-h-[70vh] overflow-y-auto px-5 py-4">
 		<p class="text-[13.5px] leading-relaxed text-muted">
-			The catalogue is a single YAML file. Adding a tool means one pull request against
+			The catalogue keeps each tool and its images in one directory. Add a tool by creating
 			<code class="font-mono text-[12.5px] text-ink">{CATALOG_PATH}</code>.
 		</p>
 
@@ -98,7 +97,12 @@
 			</li>
 			<li class="flex gap-3">
 				<span class="shrink-0 font-mono text-[12px] text-faint">2</span>
-				<span>Add an entry to the <code class="font-mono text-[12.5px]">tools:</code> list:</span>
+				<span>
+					Run
+					<code class="font-mono text-[12.5px] text-ink">bun run new-tool</code>
+					for an interactive scaffold, or create the directory and
+					<code class="font-mono text-[12.5px]">about.yaml</code> manually:
+				</span>
 			</li>
 		</ol>
 
@@ -106,6 +110,7 @@
 			class="mt-3 overflow-x-auto rounded-md border border-line bg-canvas p-3 font-mono text-[11.5px] leading-relaxed text-muted">{template}</pre>
 
 		<p class="mt-2 text-[12px] leading-snug text-faint">
+			<span class="text-muted">url</span> is the primary website or repository link.
 			<span class="text-muted">category</span> must be one of: {categoryIds.join(', ')}.
 			<span class="text-muted">platforms</span>: windows, linux, web, macos, android, ios.
 			<span class="text-muted">pricing</span>: free, freemium, paid.
@@ -133,11 +138,11 @@
 
 	<div class="flex flex-wrap items-center gap-2 border-t border-line px-5 py-3.5">
 		<a
-			href={EDIT_CATALOG_URL}
+			href={NEW_TOOL_URL}
 			rel="external noopener"
 			class="inline-flex h-8 items-center rounded-md bg-accent-fill px-3 text-[12.5px] font-medium text-accent-on-fill transition-opacity duration-100 hover:opacity-90"
 		>
-			Edit {CATALOG_PATH} on GitHub
+			Create about.yaml on GitHub
 		</a>
 		<button
 			type="button"

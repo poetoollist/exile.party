@@ -1,0 +1,18 @@
+name: r/PathOfExile2
+headline: The sequel's subreddit, where new tools and patch notes land first
+description: The sequel's subreddit, where patch notes, tool releases, build
+  clips and developer responses land first.
+url: https://www.reddit.com/r/PathOfExile2/
+games:
+  - poe2
+category: community
+tags:
+  - reddit
+  - news
+platforms:
+  - web
+pricing: free
+openSource: false
+status: active
+lastVerified: 2026-09-08
+notes: Separate from r/pathofexile; check both when a tool covers both games.

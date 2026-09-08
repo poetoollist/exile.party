@@ -1,0 +1,36 @@
+# Shared category definitions. Tool entries live in sibling directories.
+categories:
+  - id: build-planning
+    name: Build Planning
+    description: Planners, damage calculators, gem and passive-tree tools.
+  - id: trade
+    name: Trade
+    description: Searching, pricing, price-check overlays, bulk trade.
+  - id: crafting
+    name: Crafting
+    description: Crafting simulators, mod databases, bench and essence tools.
+  - id: atlas-and-maps
+    name: Atlas and Maps
+    description: Atlas planners, map mod checkers, layout guides.
+  - id: regex-and-search
+    name: Regex and Search
+    description: Regex builders for stash, vendor and map-mod search strings.
+  - id: loot-filters
+    name: Loot Filters
+    description: Filter editors, filter distributions, sound packs.
+  - id: overlays-and-companions
+    name: Overlays and Companions
+    description: In-game overlays not covered elsewhere; timers, lab, log parsers.
+  - id: economy-and-data
+    name: Economy and Data
+    description: League economy trackers, ladders, datamined game data.
+  - id: leveling-and-guides
+    name: Leveling and Guides
+    description: Leveling trackers, gem progression, quest tools.
+  - id: community
+    name: Community
+    description: Wikis, Discords, build aggregators.
+  - id: league-specific
+    name: League Specific
+    description: Tools built for a single league mechanic; expect them to go quiet
+      once the league ends.

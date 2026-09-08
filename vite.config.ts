@@ -1,4 +1,5 @@
 import tailwindcss from '@tailwindcss/vite';
+import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
 import adapter from '@sveltejs/adapter-static';
@@ -16,6 +17,12 @@ export default defineConfig({
 			adapter: adapter({ pages: 'build', assets: 'build', strict: true })
 		})
 	],
+	server: {
+		fs: {
+			// Tool images live outside SvelteKit's default src-only dev-server allow list.
+			allow: [resolve(process.cwd(), 'tools')]
+		}
+	},
 	test: {
 		expect: { requireAssertions: true },
 		projects: [

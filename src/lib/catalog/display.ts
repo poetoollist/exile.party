@@ -109,11 +109,3 @@ export function overview(tool: Tool): string | null {
 	const rest = text.slice(end.index + end[0].length).trim();
 	return rest === '' ? null : rest;
 }
-
-export function iconUrl(tool: Tool): string | null {
-	return tool.icon ? `/icons/${tool.icon}` : null;
-}
-
-export function screenshotUrl(tool: Tool, file: string): string {
-	return `/shots/${tool.id}/${file}`;
-}

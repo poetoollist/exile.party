@@ -1,0 +1,26 @@
+name: Awakened PoE Trade
+headline: Price check the item under your cursor with one hotkey
+description: Price check overlay that reads the item under your cursor and queries trade.
+url: https://snosme.github.io/awakened-poe-trade/download
+games:
+  - poe1
+category: trade
+alsoIn:
+  - overlays-and-companions
+tags:
+  - price-check
+  - overlay
+  - hotkey
+platforms:
+  - windows
+  - linux
+pricing: free
+openSource: true
+source: https://github.com/SnosMe/awakened-poe-trade
+editorsPick: true
+status: active
+lastVerified: 2026-09-07
+screenshots:
+  - gem-price-check.webp
+  - rare-price-check.webp
+  - unique-price-check.webp

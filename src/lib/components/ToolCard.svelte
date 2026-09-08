@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { STATUS_LABEL, byLine, iconUrl, monogram } from '$lib/catalog/display';
+	import { iconUrl } from '$lib/catalog/assets';
+	import { STATUS_LABEL, byLine, monogram } from '$lib/catalog/display';
 	import type { Tool } from '$lib/catalog/schema';
 
 	interface Props {

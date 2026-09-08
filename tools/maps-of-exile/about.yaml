@@ -1,0 +1,26 @@
+name: Maps of Exile
+author: deathbeam
+headline: Rank every map by layout, density, boss and card value to pick a farming target
+description: Ranks and filters every map by layout, monster density, boss
+  difficulty and divination card value, with layout images and drop data per
+  map.
+url: https://mapsofexile.com/
+games:
+  - poe1
+category: atlas-and-maps
+tags:
+  - farming
+  - layouts
+  - divination-cards
+platforms:
+  - web
+pricing: free
+openSource: true
+source: https://github.com/deathbeam/maps-of-exile
+status: active
+lastVerified: 2026-09-08
+notes: Card prices come from poe.ninja and are unreliable early in a league;
+  switch the price source to Standard until they settle.
+screenshots:
+  - map-list.webp
+  - cards.webp

@@ -1,0 +1,22 @@
+name: poe.ninja
+author: rasmuskl
+headline: Currency rates, item prices and build overviews for the current league
+description: League economy tracker with currency rates, item prices, and popular builds.
+url: https://poe.ninja/
+games:
+  - poe1
+  - poe2
+category: economy-and-data
+tags:
+  - economy
+  - currency
+  - build-stats
+platforms:
+  - web
+pricing: free
+openSource: false
+editorsPick: true
+status: active
+lastVerified: 2026-09-07
+screenshots:
+  - currency.webp

@@ -1,15 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-	byLine,
-	displayHost,
-	headline,
-	iconUrl,
-	monogram,
-	overview,
-	repoLinks,
-	screenshotUrl,
-	siteLinks
-} from './display';
+import { byLine, displayHost, headline, monogram, overview, repoLinks, siteLinks } from './display';
 import type { Tool } from './schema';
 
 const tool = (over: Partial<Tool>): Tool => ({
@@ -166,13 +156,5 @@ describe('overview', () => {
 		expect(overview(tool({ description: 'Tracks the economy. Worth a look!' }))).toBe(
 			'Worth a look!'
 		);
-	});
-});
-
-describe('asset urls', () => {
-	it('points icons and screenshots at static/', () => {
-		expect(iconUrl(tool({}))).toBeNull();
-		expect(iconUrl(tool({ icon: 'x.svg' }))).toBe('/icons/x.svg');
-		expect(screenshotUrl(tool({ id: 'x' }), 'home.webp')).toBe('/shots/x/home.webp');
 	});
 });

@@ -1,0 +1,25 @@
+name: POBb.in
+author: Dav1dde
+headline: Share a Path of Building build as a link that renders the tree, gear and stats
+description: Pastebin for Path of Building codes that renders the tree, gear and
+  stats in the browser, and the share target built into Path of Building.
+url: https://pobb.in/
+games:
+  - poe1
+  - poe2
+category: build-planning
+tags:
+  - build-sharing
+  - import-export
+platforms:
+  - web
+pricing: free
+openSource: true
+source: https://github.com/Dav1dde/pasteofexile
+status: active
+lastVerified: 2026-09-08
+notes: Works with both Path of Building and its PoE2 fork. Links render
+  read-only; import into Path of Building to edit.
+screenshots:
+  - build-view.webp
+  - share.webp

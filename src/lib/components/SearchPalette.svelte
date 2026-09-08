@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { GAME_LABEL, iconUrl, monogram } from '$lib/catalog/display';
+	import { iconUrl } from '$lib/catalog/assets';
+	import { GAME_LABEL, monogram } from '$lib/catalog/display';
 	import { searchTools } from '$lib/catalog/filter';
 	import type { Category, Game, Tool } from '$lib/catalog/schema';
 	import { searchPalette } from '$lib/search.svelte';

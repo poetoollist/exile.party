@@ -1,0 +1,27 @@
+name: Perandus Ledger
+headline: Live market prices feeding expected-value calculators for farming,
+  bossing and gem strategies
+description: Market analytics built on the public stash and currency exchange
+  APIs, with expected-value calculators for scarab, essence, harvest, beast and
+  boss farming, gem leveling and transfigured gems.
+url: https://xddbsns.com/
+games:
+  - poe1
+category: economy-and-data
+tags:
+  - economy
+  - farming
+  - expected-value
+platforms:
+  - web
+pricing: free
+openSource: false
+status: active
+lastVerified: 2026-09-08
+notes: Ad-supported. Market-side tools such as unique identification EV and
+  Faustus arbitrage are gated behind contributing data, not money; Patreon
+  removes ads and adds a custom feed.
+screenshots:
+  - tools-index.webp
+  - scarab-atlas-calculator.webp
+  - boss-profitability.webp

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { headline, iconUrl, monogram, overview } from '$lib/catalog/display';
+	import { iconUrl } from '$lib/catalog/assets';
+	import { headline, monogram, overview } from '$lib/catalog/display';
 	import Breadcrumb from '$lib/components/Breadcrumb.svelte';
 	import FactsTable from '$lib/components/FactsTable.svelte';
 	import Meta from '$lib/components/Meta.svelte';

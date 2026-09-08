@@ -98,7 +98,7 @@ test('the submit dialog explains the pull request flow and closes on Escape', as
 	await page.getByRole('button', { name: 'Submit a tool' }).first().click();
 	const dialog = page.getByRole('dialog');
 	await expect(dialog).toBeVisible();
-	await expect(dialog).toContainText('tools.yaml');
+	await expect(dialog).toContainText('tools/<tool-id>/about.yaml');
 	await expect(dialog).toContainText('bun run validate');
 	await page.keyboard.press('Escape');
 	await expect(dialog).toBeHidden();

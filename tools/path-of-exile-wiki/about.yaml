@@ -1,0 +1,23 @@
+name: Path of Exile Wiki
+headline: The community-maintained wiki for items, skills, mechanics and league history
+description: Community-maintained MediaWiki reference for items, skills,
+  mechanics, leagues and version history, hosted by Grinding Gear Games since
+  the move off Fandom.
+url: https://www.poewiki.net/
+games:
+  - poe1
+category: community
+tags:
+  - wiki
+  - reference
+platforms:
+  - web
+pricing: free
+openSource: false
+status: active
+lastVerified: 2026-09-08
+notes: Bot protection may show a short verification screen on first load. Prefer
+  this over the outdated Fandom mirror.
+screenshots:
+  - main-page.webp
+  - unique-item.webp

@@ -1,0 +1,29 @@
+name: Path of Building
+author: Path of Building Community
+headline: Plan a build offline with the full tree, skills and gear calculated
+description: Offline build planner with full passive tree, skill, and gear calculations.
+url: https://pathofbuilding.community/
+games:
+  - poe1
+  - poe2
+category: build-planning
+tags:
+  - offline
+  - import-export
+  - dps-calculator
+platforms:
+  - windows
+  - linux
+pricing: free
+openSource: true
+sources:
+  poe1: https://github.com/PathOfBuildingCommunity/PathOfBuilding
+  poe2: https://github.com/PathOfBuildingCommunity/PathOfBuilding-PoE2
+editorsPick: true
+status: active
+lastVerified: 2026-09-07
+notes: PoE1 and PoE2 are separate builds from the same project.
+screenshots:
+  - passive-tree.webp
+  - items.webp
+  - power-preview.webp

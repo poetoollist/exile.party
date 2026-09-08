@@ -6,7 +6,7 @@ export interface Maintainer {
 	role?: string;
 }
 
-/** Order is as given, not ranked. Tools marked `byMaintainer` in tools.yaml belong to this list. */
+/** Order is as given, not ranked. Tools marked `byMaintainer` in about.yaml belong to this list. */
 export const MAINTAINERS: readonly Maintainer[] = [
 	{ login: 'fredfhammer' },
 	{ login: 'juddisjudd' },

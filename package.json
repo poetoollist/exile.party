@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"new-tool": "bun scripts/new-tool.ts",
 		"build": "bun run og && vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -20,6 +21,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
+		"@inquirer/prompts": "^8.7.2",
 		"@playwright/test": "^1.60.0",
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@sveltejs/kit": "^2.63.0",

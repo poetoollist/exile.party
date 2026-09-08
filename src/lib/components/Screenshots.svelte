@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { screenshotUrl } from '$lib/catalog/display';
+	import { screenshotUrl } from '$lib/catalog/assets';
 	import type { Tool } from '$lib/catalog/schema';
 
 	interface Props {

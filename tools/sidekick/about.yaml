@@ -1,0 +1,29 @@
+name: Sidekick
+author: domialex and leMicin
+headline: Price check items and spot dangerous map mods from one overlay
+description: Companion overlay with price check, map mod warnings, a wealth
+  tracker, chat commands, and regex hotkeys.
+url: https://sidekick-poe.github.io/
+games:
+  - poe1
+  - poe2
+category: trade
+alsoIn:
+  - overlays-and-companions
+  - atlas-and-maps
+tags:
+  - overlay
+  - price-check
+  - map-mods
+platforms:
+  - windows
+pricing: free
+openSource: true
+source: https://github.com/Sidekick-Poe/Sidekick
+editorsPick: true
+status: active
+lastVerified: 2026-09-07
+screenshots:
+  - rare-price-check.webp
+  - map-mods.webp
+  - wealth-tracker.webp

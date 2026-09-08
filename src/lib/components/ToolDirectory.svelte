@@ -188,7 +188,7 @@
 		<div>
 			<h2 class="text-[15px] font-medium text-ink">Missing a tool?</h2>
 			<p class="mt-1 text-[13px] leading-snug text-muted">
-				The catalogue is a single YAML file. Open an issue or send a pull request.
+				Each listing has its own directory. Open an issue or send a pull request.
 			</p>
 		</div>
 		<button

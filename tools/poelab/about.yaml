@@ -1,0 +1,24 @@
+name: PoELab
+headline: Today's Labyrinth layouts for all four difficulties, with the route
+  and secrets marked
+description: Publishes the daily Labyrinth layouts for all four difficulties
+  after each reset, with the route, secret areas, Izaro modifiers and trap
+  warnings marked.
+url: https://www.poelab.com/
+games:
+  - poe1
+category: atlas-and-maps
+tags:
+  - labyrinth
+  - layouts
+  - daily
+platforms:
+  - web
+pricing: free
+openSource: false
+status: active
+lastVerified: 2026-09-08
+notes: Ad-supported. Layouts change at the daily server reset, and the site's
+  bot protection may show a verification screen first.
+screenshots:
+  - uber-lab-layout.webp

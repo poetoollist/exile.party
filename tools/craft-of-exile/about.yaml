@@ -1,0 +1,25 @@
+name: Craft of Exile
+author: Nebuchenazarr
+headline: Simulate a craft and see the odds and cost before you spend the currency
+description: Crafting simulator and probability calculator covering every crafting method.
+url: https://www.craftofexile.com/
+urls:
+  poe1: https://www.craftofexile.com/
+  poe2: https://www.craftofexile.com/?game=poe2
+games:
+  - poe1
+  - poe2
+category: crafting
+tags:
+  - simulator
+  - probability
+  - mod-pool
+platforms:
+  - web
+pricing: free
+openSource: false
+editorsPick: true
+status: active
+lastVerified: 2026-09-07
+screenshots:
+  - calculator.webp

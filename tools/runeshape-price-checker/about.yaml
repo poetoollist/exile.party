@@ -1,0 +1,23 @@
+name: RuneshapePriceChecker
+headline: Colour-coded prices next to every runeshape row, read by OCR
+description: Overlay that reads the Runes of Aldur runeshape panel with OCR and
+  shows colour-coded prices from poe2scout or poe.ninja next to each row.
+url: https://github.com/Barragek0/RuneshapePriceChecker
+games:
+  - poe2
+category: league-specific
+tags:
+  - overlay
+  - price-check
+  - ocr
+platforms:
+  - windows
+pricing: free
+openSource: true
+source: https://github.com/Barragek0/RuneshapePriceChecker
+status: active
+lastVerified: 2026-09-07
+notes: Needs borderless windowed mode and UI brightness above -0.8, or the
+  capture fails.
+screenshots:
+  - overlay.webp

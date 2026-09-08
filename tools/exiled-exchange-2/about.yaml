@@ -1,0 +1,27 @@
+name: Exiled Exchange 2
+headline: Price check the item under your cursor, in a fork of Awakened PoE Trade
+description: Price check overlay forked from Awakened PoE Trade, with the item
+  database and trade queries kept current.
+url: https://kvan7.github.io/Exiled-Exchange-2/download
+games:
+  - poe2
+category: trade
+alsoIn:
+  - overlays-and-companions
+tags:
+  - price-check
+  - overlay
+  - hotkey
+platforms:
+  - windows
+  - linux
+pricing: free
+openSource: true
+source: https://github.com/Kvan7/Exiled-Exchange-2
+editorsPick: true
+status: active
+lastVerified: 2026-09-07
+screenshots:
+  - rare-price-check.webp
+  - unique-price-check.webp
+  - currency-price-check.webp

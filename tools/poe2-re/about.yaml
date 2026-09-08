@@ -1,0 +1,24 @@
+name: poe2.re
+author: veiset
+headline: Build a regex for waystone, tablet, relic and vendor searches
+description: Generates regex strings for stash and vendor searches, covering
+  waystones, tablets, relics, vendor items and rare item crafting.
+url: https://poe2.re/
+games:
+  - poe2
+category: regex-and-search
+tags:
+  - regex
+  - vendor-search
+  - waystones
+platforms:
+  - web
+pricing: free
+openSource: true
+source: https://github.com/veiset/poe.re
+status: active
+lastVerified: 2026-09-08
+notes: Shares a codebase with poe.re; league and economy data refresh hourly.
+screenshots:
+  - vendor.webp
+  - waystones.webp
