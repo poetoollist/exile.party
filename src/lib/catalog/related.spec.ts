@@ -9,6 +9,7 @@ const tool = (over: Partial<Tool>): Tool => ({
 	url: 'https://x.example',
 	games: ['poe1'],
 	category: 'trade',
+	alsoIn: [],
 	tags: [],
 	platforms: ['web'],
 	pricing: 'free',
@@ -66,5 +67,56 @@ describe('relatedTools', () => {
 			tool({ id: 'a', name: 'Alpha', category: 'trade' })
 		];
 		expect(relatedTools(subject, list).map((t) => t.id)).toEqual(['a', 'b']);
+	});
+
+	it('counts a secondary category as shared', () => {
+		const list = [
+			subject,
+			tool({
+				id: 'cross',
+				name: 'Cross',
+				category: 'crafting',
+				alsoIn: ['trade'],
+				games: ['poe2']
+			}),
+			tool({
+				id: 'tags',
+				name: 'Tags',
+				category: 'crafting',
+				tags: ['overlay', 'price-check'],
+				games: ['poe1']
+			})
+		];
+		// cross: category 4. tags: two tags 2 + game 1 = 3.
+		expect(relatedTools(subject, list).map((t) => t.id)).toEqual(['cross', 'tags']);
+	});
+
+	it('awards the category bonus once even when several categories overlap', () => {
+		const me = tool({
+			id: 'me',
+			category: 'trade',
+			alsoIn: ['crafting'],
+			tags: ['a', 'b', 'c', 'd'],
+			games: ['poe1']
+		});
+		const list = [
+			me,
+			tool({
+				id: 'double',
+				name: 'Double',
+				category: 'trade',
+				alsoIn: ['crafting'],
+				games: ['poe2']
+			}),
+			tool({
+				id: 'tagged',
+				name: 'Tagged',
+				category: 'maps',
+				tags: ['a', 'b', 'c', 'd'],
+				games: ['poe1']
+			})
+		];
+		// double: category 4, once. tagged: four tags 4 + game 1 = 5.
+		expect(relatedTools(me, list).map((t) => t.id)).toEqual(['tagged', 'double']);
 	});
 });

@@ -9,6 +9,9 @@ export const Status = z.enum(['active', 'unmaintained', 'dead']);
 export const Pricing = z.enum(['free', 'freemium', 'paid']);
 export const Platform = z.enum(['windows', 'macos', 'linux', 'web', 'android', 'ios']);
 
+/** Id of the virtual "Start here" section the directory leads with. `tools.yaml` cannot define a category with it. */
+export const START_HERE_ID = 'start-here';
+
 /** Per-game links, for tools that split PoE1 and PoE2 across separate URLs. */
 const PerGame = z.strictObject({ poe1: https.optional(), poe2: https.optional() });
 
@@ -42,6 +45,10 @@ export const Tool = z
 		urls: PerGame.optional(),
 		games: z.array(Game).nonempty(),
 		category: id,
+		/** Secondary categories. The tool is listed under each of these as well as under `category`. */
+		alsoIn: z.array(id).default([]),
+		/** Position inside every section the tool appears in. Ranked tools lead, ascending; unranked follow A to Z. */
+		rank: z.number().int().positive().optional(),
 		tags: z.array(z.string().regex(kebab)).default([]),
 		platforms: z.array(Platform).nonempty(),
 		pricing: Pricing,
@@ -77,6 +84,10 @@ export const Tool = z
 	.refine((t) => !(t.source ?? t.sources) || t.openSource, {
 		message: 'a repository link means openSource must be true',
 		path: ['openSource']
+	})
+	.refine((t) => new Set(t.alsoIn).size === t.alsoIn.length && !t.alsoIn.includes(t.category), {
+		message: 'alsoIn must not repeat category or list an id twice',
+		path: ['alsoIn']
 	});
 
 export const Catalog = z
@@ -85,6 +96,15 @@ export const Catalog = z
 		tools: z.array(Tool)
 	})
 	.superRefine((c, ctx) => {
+		c.categories.forEach((cat, i) => {
+			if (cat.id === START_HERE_ID) {
+				ctx.addIssue({
+					code: 'custom',
+					path: ['categories', i, 'id'],
+					message: `${START_HERE_ID} is reserved for the Start here section`
+				});
+			}
+		});
 		const cats = new Set(c.categories.map((x) => x.id));
 		const seen = new Set<string>();
 		c.tools.forEach((t, i) => {
@@ -99,6 +119,15 @@ export const Catalog = z
 					message: `unknown category ${t.category}`
 				});
 			}
+			t.alsoIn.forEach((a, j) => {
+				if (!cats.has(a)) {
+					ctx.addIssue({
+						code: 'custom',
+						path: ['tools', i, 'alsoIn', j],
+						message: `unknown category ${a}`
+					});
+				}
+			});
 		});
 	});
 

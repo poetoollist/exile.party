@@ -19,6 +19,7 @@ const tool = (over: Partial<Tool>): Tool => ({
 	url: 'https://x.example',
 	games: ['poe1', 'poe2'],
 	category: 'trade',
+	alsoIn: [],
 	tags: [],
 	platforms: ['web'],
 	pricing: 'free',

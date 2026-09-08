@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Catalog, Tool } from './schema';
+import { Catalog, START_HERE_ID, Tool } from './schema';
 
 const valid = {
 	id: 'example-tool',
@@ -58,6 +58,32 @@ describe('Tool', () => {
 		expect(Tool.parse(valid).screenshots).toEqual([]);
 	});
 
+	it('defaults alsoIn to an empty list and leaves rank unset', () => {
+		const t = Tool.parse(valid);
+		expect(t.alsoIn).toEqual([]);
+		expect(t.rank).toBeUndefined();
+	});
+
+	it('accepts secondary categories and a rank', () => {
+		const r = Tool.safeParse({ ...valid, alsoIn: ['overlays-and-companions'], rank: 2 });
+		expect(r.success).toBe(true);
+	});
+
+	it.each([
+		['alsoIn repeating the primary category', { ...valid, alsoIn: ['trade'] }],
+		['alsoIn listing an id twice', { ...valid, alsoIn: ['crafting', 'crafting'] }],
+		['a rank of zero', { ...valid, rank: 0 }],
+		['a fractional rank', { ...valid, rank: 1.5 }]
+	])('rejects %s', (_, input) => {
+		expect(Tool.safeParse(input).success).toBe(false);
+	});
+
+	it('points at alsoIn when it repeats the primary category', () => {
+		const r = Tool.safeParse({ ...valid, alsoIn: ['trade'] });
+		expect(r.error?.issues[0].path).toEqual(['alsoIn']);
+		expect(r.error?.issues[0].message).toMatch(/alsoIn/);
+	});
+
 	it('accepts the display fields', () => {
 		const r = Tool.safeParse({
 			...valid,
@@ -93,6 +119,22 @@ describe('Catalog', () => {
 		const r = Catalog.safeParse({ categories, tools: [{ ...valid, category: 'nope' }] });
 		expect(r.success).toBe(false);
 		expect(r.error?.issues[0].message).toMatch(/unknown category/);
+	});
+
+	it('rejects an unknown category in alsoIn and points at the entry', () => {
+		const r = Catalog.safeParse({ categories, tools: [{ ...valid, alsoIn: ['nope'] }] });
+		expect(r.success).toBe(false);
+		expect(r.error?.issues[0].message).toMatch(/unknown category nope/);
+		expect(r.error?.issues[0].path).toEqual(['tools', 0, 'alsoIn', 0]);
+	});
+
+	it('reserves start-here for the virtual section', () => {
+		const r = Catalog.safeParse({
+			categories: [...categories, { id: START_HERE_ID, name: 'Start here' }],
+			tools: []
+		});
+		expect(r.success).toBe(false);
+		expect(r.error?.issues[0].message).toMatch(/reserved/);
 	});
 
 	it('rejects an empty category list', () => {
