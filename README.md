@@ -54,6 +54,7 @@ The catalogue lives in [`tools.yaml`](tools.yaml). Adding a tool is one pull req
 | `urls`         | no       | `{ poe1, poe2 }` when the games have separate pages                                                 |
 | `games`        | yes      | any of `poe1`, `poe2`                                                                               |
 | `category`     | yes      | one of the ids under `categories:` in the same file                                                 |
+| `alsoIn`       | no       | extra category ids the tool is also listed under; must not repeat `category`                        |
 | `tags`         | no       | kebab-case, used by search                                                                          |
 | `platforms`    | yes      | `windows`, `macos`, `linux`, `web`, `android`, `ios`                                                |
 | `pricing`      | yes      | `free`, `freemium`, `paid`                                                                          |
@@ -62,6 +63,7 @@ The catalogue lives in [`tools.yaml`](tools.yaml). Adding a tool is one pull req
 | `sources`      | no       | `{ poe1, poe2 }` for projects with a repository per game                                            |
 | `official`     | no       | published by Grinding Gear Games rather than the community                                          |
 | `editorsPick`  | no       | what we would hand a new player first                                                               |
+| `rank`         | no       | position inside every section the tool appears in; ranked tools first, ascending, then A to Z       |
 | `byMaintainer` | no       | written by a maintainer of this site; the card discloses it                                         |
 | `author`       | no       | who makes the tool; otherwise the GitHub owner of `source` or `url` is shown                        |
 | `headline`     | no       | one sentence for the tool page, 10 to 120 characters; otherwise the first sentence of `description` |

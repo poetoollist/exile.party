@@ -178,6 +178,15 @@ test("an editor's pick carries a star on its card", async ({ page }) => {
 	await expect(first.getByText("Editor's pick")).toBeAttached();
 });
 
+test('a tool with alsoIn is listed under each of its categories', async ({ page }) => {
+	await page.goto('/tools');
+	const scalpel = { name: 'Scalpel', exact: true };
+	await expect(
+		page.locator('#cat-overlays-and-companions').getByRole('link', scalpel)
+	).toBeVisible();
+	await expect(page.locator('#cat-loot-filters').getByRole('link', scalpel)).toBeVisible();
+});
+
 test('the switch-game link reaches the chooser with the escape-hatch querystring', async ({
 	page
 }) => {

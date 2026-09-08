@@ -51,6 +51,7 @@ tools:
     url: https://exilecompass.com/
     games: [poe1, poe2]
     category: overlays-and-companions
+    alsoIn: [leveling-and-guides, regex-and-search]
     tags: [overlay, campaign-tracker, regex, timer, voice-commands]
     platforms: [windows, linux]
     pricing: free
@@ -77,6 +78,7 @@ tools:
     url: https://scalpel.fourth.party/
     games: [poe1, poe2]
     category: overlays-and-companions
+    alsoIn: [loot-filters, trade, regex-and-search]
     tags: [overlay, filter-editor, price-check, regex]
     platforms: [windows, linux]
     pricing: free
@@ -101,6 +103,7 @@ tools:
     url: https://github.com/Lailloken/Exile-UI
     games: [poe1, poe2]
     category: overlays-and-companions
+    alsoIn: [leveling-and-guides, atlas-and-maps]
     tags: [overlay, quality-of-life, autohotkey]
     platforms: [windows]
     pricing: free
@@ -124,6 +127,7 @@ tools:
     url: https://sidekick-poe.github.io/
     games: [poe1, poe2]
     category: trade
+    alsoIn: [overlays-and-companions, atlas-and-maps]
     tags: [overlay, price-check, map-mods]
     platforms: [windows]
     pricing: free
@@ -145,6 +149,7 @@ tools:
     url: https://snosme.github.io/awakened-poe-trade/download
     games: [poe1]
     category: trade
+    alsoIn: [overlays-and-companions]
     tags: [price-check, overlay, hotkey]
     platforms: [windows, linux]
     pricing: free
@@ -168,6 +173,7 @@ tools:
     url: https://kvan7.github.io/Exiled-Exchange-2/download
     games: [poe2]
     category: trade
+    alsoIn: [overlays-and-companions]
     tags: [price-check, overlay, hotkey]
     platforms: [windows, linux]
     pricing: free
