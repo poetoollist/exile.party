@@ -128,7 +128,7 @@ describe('groupBySection', () => {
 		const groups = groupBySection(secs, tools);
 		expect(groups.map((g) => g.id)).toEqual([START_HERE_ID, 'trade', 'crafting']);
 		expect(groups[0].tools.map((t) => t.id)).toEqual(['overlay']);
-		expect(groups[0].description).toBe("Editor's picks: the tools most players install first.");
+		expect(groups[0].description).toBe('Editor’s picks: the tools most players install first.');
 		expect(groups[2].tools.map((t) => t.id)).toEqual(['bench', 'overlay']);
 	});
 

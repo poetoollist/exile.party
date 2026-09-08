@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { START_HERE_ID } from '$lib/catalog/schema';
+
 	interface Props {
 		id: string;
 		class?: string;
@@ -8,7 +10,8 @@
 
 	/** Path data per category id, drawn on a 16-unit grid at stroke 1.3. */
 	const PATHS: Record<string, string> = {
-		'start-here': 'M8 2.5 9.4 6.4 13.2 6.6 10.3 9 11.2 12.8 8 10.7 4.8 12.8 5.7 9 2.8 6.6 6.6 6.4Z',
+		[START_HERE_ID]:
+			'M8 2.5 9.4 6.4 13.2 6.6 10.3 9 11.2 12.8 8 10.7 4.8 12.8 5.7 9 2.8 6.6 6.6 6.4Z',
 		'build-planning': 'M8 2v4M8 6 4 10M8 6l4 4M4 10v4M12 10v4M2.5 14h3M10.5 14h3',
 		trade: 'M2.5 5.5h9l-2.5-2.5M13.5 10.5h-9l2.5 2.5',
 		crafting: 'M9.5 2.5 13.5 6.5 6 14l-4-4ZM2 14h4M9.5 6.5l-1-1',

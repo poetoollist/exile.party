@@ -5,7 +5,7 @@
 	export interface RailItem {
 		id: string;
 		name: string;
-		/** Tools in this category after the current filters. 0 means the section is not on the page. */
+		/** Tools in this section after the current filters. A cross-listed tool counts in every section it belongs to, so the counts can sum past the heading total. 0 means the section is not on the page. */
 		count: number;
 	}
 

@@ -11,7 +11,7 @@ export function countByGame(tools: readonly Tool[]): Record<Game, number> {
 export const START_HERE: Category = {
 	id: START_HERE_ID,
 	name: 'Start here',
-	description: "Editor's picks: the tools most players install first."
+	description: 'Editor’s picks: the tools most players install first.'
 };
 
 const rankOf = (t: Tool) => t.rank ?? Number.MAX_SAFE_INTEGER;
@@ -37,11 +37,8 @@ export interface CategoryGroup extends Category {
 }
 
 /** Section order, `sortTools` inside each, empty sections dropped. A tool appears in every section it belongs to. */
-export function groupBySection(
-	sections: readonly Category[],
-	tools: readonly Tool[]
-): CategoryGroup[] {
-	return sections
+export function groupBySection(secs: readonly Category[], tools: readonly Tool[]): CategoryGroup[] {
+	return secs
 		.map((s) => ({ ...s, tools: sortTools(tools.filter((t) => inSection(t, s.id))) }))
 		.filter((g) => g.tools.length > 0);
 }

@@ -49,7 +49,7 @@
 					{tool.name}
 				</a>
 				{#if tool.editorsPick}
-					<span class="inline-flex shrink-0 text-accent" title="Editor's pick">
+					<span class="inline-flex shrink-0 text-accent" title="Editor’s pick">
 						<svg
 							viewBox="0 0 16 16"
 							fill="none"
@@ -63,7 +63,7 @@
 								d="M8 2.5 9.4 6.4 13.2 6.6 10.3 9 11.2 12.8 8 10.7 4.8 12.8 5.7 9 2.8 6.6 6.6 6.4Z"
 							/>
 						</svg>
-						<span class="sr-only">Editor's pick</span>
+						<span class="sr-only">Editor’s pick</span>
 					</span>
 				{/if}
 				{#if tool.status !== 'active'}

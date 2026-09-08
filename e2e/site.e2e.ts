@@ -174,16 +174,14 @@ test('Start here leads the directory and the rail reaches it', async ({ page }) 
 test("an editor's pick carries a star on its card", async ({ page }) => {
 	await page.goto('/tools');
 	const first = page.locator('#cat-start-here li').first();
-	await expect(first.getByTitle("Editor's pick")).toBeAttached();
-	await expect(first.getByText("Editor's pick")).toBeAttached();
+	await expect(first.getByTitle('Editor’s pick')).toBeAttached();
+	await expect(first.getByText('Editor’s pick')).toBeAttached();
 });
 
 test('a tool with alsoIn is listed under each of its categories', async ({ page }) => {
 	await page.goto('/tools');
 	const scalpel = { name: 'Scalpel', exact: true };
-	await expect(
-		page.locator('#cat-overlays-and-companions').getByRole('link', scalpel)
-	).toBeVisible();
+	await expect(page.locator('#cat-regex-and-search').getByRole('link', scalpel)).toBeVisible();
 	await expect(page.locator('#cat-loot-filters').getByRole('link', scalpel)).toBeVisible();
 });
 
