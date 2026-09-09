@@ -10,8 +10,8 @@ categories:
     name: Crafting
     description: Crafting simulators, mod databases, bench and essence tools.
   - id: atlas-and-maps
-    name: Atlas and Maps
-    description: Atlas planners, map mod checkers, layout guides.
+    name: Campaign & Layout Guides
+    description: Campaign guides, atlas planners, map mod checkers, map and lab layouts.
   - id: regex-and-search
     name: Regex and Search
     description: Regex builders for stash, vendor and map-mod search strings.
