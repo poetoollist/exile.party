@@ -49,8 +49,8 @@ const ToolMetadataObject = z.strictObject({
 	category: id,
 	/** Secondary categories. The tool is listed under each of these as well as under `category`. */
 	alsoIn: z.array(id).default([]),
-	/** Position inside every section the tool appears in. Ranked tools lead, ascending; unranked follow A to Z. */
-	rank: z.number().int().positive().optional(),
+	/** Position inside a section, keyed by section id. Ranked tools lead the section, ascending; unranked follow A to Z. */
+	rank: z.record(id, z.number().int().positive()).optional(),
 	tags: z.array(z.string().regex(kebab)).default([]),
 	platforms: z.array(Platform).nonempty(),
 	pricing: Pricing,
@@ -100,6 +100,16 @@ function validateToolMetadata(t: ToolMetadataShape, ctx: z.RefinementCtx) {
 			message: 'alsoIn must not repeat category or list an id twice',
 			path: ['alsoIn']
 		});
+	}
+	const sectionIds = new Set([t.category, ...t.alsoIn, ...(t.editorsPick ? [START_HERE_ID] : [])]);
+	for (const key of Object.keys(t.rank ?? {})) {
+		if (!sectionIds.has(key)) {
+			ctx.addIssue({
+				code: 'custom',
+				path: ['rank', key],
+				message: `rank key ${key} is not a section this tool is in`
+			});
+		}
 	}
 }
 

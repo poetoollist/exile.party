@@ -14,11 +14,13 @@ export const START_HERE: Category = {
 	description: 'Editor’s picks: the tools most players install first.'
 };
 
-const rankOf = (t: Tool) => t.rank ?? Number.MAX_SAFE_INTEGER;
+const rankOf = (t: Tool, sectionId: string) => t.rank?.[sectionId] ?? Number.MAX_SAFE_INTEGER;
 
-/** Ranked tools first, ascending; equal ranks and unranked tools A to Z. Returns a new array. */
-export function sortTools(tools: readonly Tool[]): Tool[] {
-	return [...tools].sort((a, b) => rankOf(a) - rankOf(b) || a.name.localeCompare(b.name));
+/** Ranked tools first ascending within `sectionId`; equal ranks and unranked tools A to Z. Returns a new array. */
+export function sortTools(tools: readonly Tool[], sectionId: string): Tool[] {
+	return [...tools].sort(
+		(a, b) => rankOf(a, sectionId) - rankOf(b, sectionId) || a.name.localeCompare(b.name)
+	);
 }
 
 /** Start here, then the catalogue categories in their own order. */
@@ -36,10 +38,16 @@ export interface CategoryGroup extends Category {
 	tools: Tool[];
 }
 
-/** Section order, `sortTools` inside each, empty sections dropped. A tool appears in every section it belongs to. */
+/** Section order, `sortTools` inside each by that section's own rank, empty sections dropped. A tool appears in every section it belongs to. */
 export function groupBySection(secs: readonly Category[], tools: readonly Tool[]): CategoryGroup[] {
 	return secs
-		.map((s) => ({ ...s, tools: sortTools(tools.filter((t) => inSection(t, s.id))) }))
+		.map((s) => ({
+			...s,
+			tools: sortTools(
+				tools.filter((t) => inSection(t, s.id)),
+				s.id
+			)
+		}))
 		.filter((g) => g.tools.length > 0);
 }
 

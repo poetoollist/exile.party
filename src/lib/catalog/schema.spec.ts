@@ -64,16 +64,41 @@ describe('Tool', () => {
 		expect(t.rank).toBeUndefined();
 	});
 
-	it('accepts secondary categories and a rank', () => {
-		const r = Tool.safeParse({ ...valid, alsoIn: ['overlays-and-companions'], rank: 2 });
+	it('accepts a rank for the tool own category', () => {
+		const r = Tool.safeParse({ ...valid, rank: { trade: 1 } });
+		expect(r.success).toBe(true);
+	});
+
+	it('accepts a start-here rank alongside a category rank when the tool is an editors pick', () => {
+		const r = Tool.safeParse({
+			...valid,
+			editorsPick: true,
+			rank: { trade: 1, 'start-here': 2 }
+		});
+		expect(r.success).toBe(true);
+	});
+
+	it('rejects a start-here rank without editorsPick', () => {
+		const r = Tool.safeParse({ ...valid, rank: { 'start-here': 1 } });
+		expect(r.success).toBe(false);
+		expect(r.error?.issues[0].path).toEqual(['rank', 'start-here']);
+	});
+
+	it('rejects a rank key that is not the category or in alsoIn', () => {
+		const r = Tool.safeParse({ ...valid, rank: { crafting: 1 } });
+		expect(r.success).toBe(false);
+	});
+
+	it('accepts a rank key that is in alsoIn', () => {
+		const r = Tool.safeParse({ ...valid, alsoIn: ['crafting'], rank: { crafting: 1 } });
 		expect(r.success).toBe(true);
 	});
 
 	it.each([
 		['alsoIn repeating the primary category', { ...valid, alsoIn: ['trade'] }],
 		['alsoIn listing an id twice', { ...valid, alsoIn: ['crafting', 'crafting'] }],
-		['a rank of zero', { ...valid, rank: 0 }],
-		['a fractional rank', { ...valid, rank: 1.5 }]
+		['a rank of zero', { ...valid, rank: { trade: 0 } }],
+		['a fractional rank', { ...valid, rank: { trade: 1.5 } }]
 	])('rejects %s', (_, input) => {
 		expect(Tool.safeParse(input).success).toBe(false);
 	});

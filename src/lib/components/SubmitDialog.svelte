@@ -117,7 +117,7 @@ lastVerified: ${new Date().toISOString().slice(0, 10)}`;
 			<span class="text-muted">openSource</span> is required, and a
 			<span class="text-muted">source</span> link is only valid when it is true.
 			<span class="text-muted">alsoIn</span> lists extra categories;
-			<span class="text-muted">rank</span> orders a tool within its sections.
+			<span class="text-muted">rank</span> orders a tool within one section, keyed by section id.
 		</p>
 
 		<ol class="mt-4 space-y-3 text-[13.5px] leading-snug text-muted" start="3">

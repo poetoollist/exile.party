@@ -53,19 +53,30 @@ describe('countByGame', () => {
 });
 
 describe('sortTools', () => {
-	it('puts ranked tools first ascending, then the rest A to Z', () => {
+	it('puts ranked tools first ascending, then the rest A to Z, for the given section', () => {
 		const list = [
 			tool({ id: 'zeta', name: 'Zeta' }),
-			tool({ id: 'second', name: 'Second', rank: 2 }),
+			tool({ id: 'second', name: 'Second', rank: { trade: 2 } }),
 			tool({ id: 'alpha', name: 'alpha' }),
-			tool({ id: 'first', name: 'First', rank: 1 })
+			tool({ id: 'first', name: 'First', rank: { trade: 1 } })
 		];
-		expect(sortTools(list).map((t) => t.id)).toEqual(['first', 'second', 'alpha', 'zeta']);
+		expect(sortTools(list, 'trade').map((t) => t.id)).toEqual(['first', 'second', 'alpha', 'zeta']);
+	});
+
+	it('ignores a rank set for a different section', () => {
+		const list = [
+			tool({ id: 'b', name: 'B', rank: { crafting: 1 } }),
+			tool({ id: 'a', name: 'A' })
+		];
+		expect(sortTools(list, 'trade').map((t) => t.id)).toEqual(['a', 'b']);
 	});
 
 	it('breaks equal ranks by name and leaves its input alone', () => {
-		const list = [tool({ id: 'b', name: 'B', rank: 1 }), tool({ id: 'a', name: 'A', rank: 1 })];
-		expect(sortTools(list).map((t) => t.id)).toEqual(['a', 'b']);
+		const list = [
+			tool({ id: 'b', name: 'B', rank: { trade: 1 } }),
+			tool({ id: 'a', name: 'A', rank: { trade: 1 } })
+		];
+		expect(sortTools(list, 'trade').map((t) => t.id)).toEqual(['a', 'b']);
 		expect(list.map((t) => t.id)).toEqual(['b', 'a']);
 	});
 });
@@ -132,13 +143,45 @@ describe('groupBySection', () => {
 		expect(groups[2].tools.map((t) => t.id)).toEqual(['bench', 'overlay']);
 	});
 
-	it('applies rank inside every section the tool is in', () => {
+	it('ranks a tool in one section it is listed under but not another', () => {
 		const tools = [
-			tool({ id: 'lead', name: 'Zed', category: 'trade', alsoIn: ['crafting'], rank: 1 }),
+			tool({
+				id: 'lead',
+				name: 'Zed',
+				category: 'trade',
+				alsoIn: ['crafting'],
+				rank: { trade: 1 }
+			}),
+			tool({ id: 'zeta', name: 'Zeta', category: 'trade' }),
 			tool({ id: 'other', name: 'Alpha', category: 'crafting' })
 		];
 		const groups = groupBySection(secs, tools);
-		expect(groups[1].tools.map((t) => t.id)).toEqual(['lead', 'other']);
+		const trade = groups.find((g) => g.id === 'trade');
+		const crafting = groups.find((g) => g.id === 'crafting');
+		expect(trade?.tools.map((t) => t.id)).toEqual(['lead', 'zeta']);
+		expect(crafting?.tools.map((t) => t.id)).toEqual(['other', 'lead']);
+	});
+
+	it('orders Start here by its own rank, ignoring a category rank', () => {
+		const tools = [
+			tool({
+				id: 'first',
+				name: 'Zed',
+				category: 'trade',
+				editorsPick: true,
+				rank: { trade: 5, 'start-here': 1 }
+			}),
+			tool({
+				id: 'second',
+				name: 'Alpha',
+				category: 'trade',
+				editorsPick: true,
+				rank: { trade: 1 }
+			})
+		];
+		const groups = groupBySection(secs, tools);
+		const startHere = groups.find((g) => g.id === START_HERE_ID);
+		expect(startHere?.tools.map((t) => t.id)).toEqual(['first', 'second']);
 	});
 });
 
