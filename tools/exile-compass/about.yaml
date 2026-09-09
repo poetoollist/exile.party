@@ -25,6 +25,10 @@ openSource: true
 source: https://github.com/juddisjudd/exilecompass
 byMaintainer: true
 editorsPick: true
+rank:
+  atlas-and-maps: 2
+  leveling-and-guides: 2
+  overlays-and-companions: 4
 status: active
 lastVerified: 2026-09-07
 notes: PoE2 gets the full feature set; PoE1 support is focused on levelling.

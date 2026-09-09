@@ -16,6 +16,9 @@ platforms:
   - web
 pricing: free
 openSource: false
+editorsPick: true
+rank:
+  atlas-and-maps: 3
 status: active
 lastVerified: 2026-09-08
 notes: Ad-supported. Layouts change at the daily server reset, and the site's

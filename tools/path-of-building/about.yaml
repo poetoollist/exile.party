@@ -21,6 +21,9 @@ sources:
   poe2: https://github.com/PathOfBuildingCommunity/PathOfBuilding-PoE2
 editorsPick: true
 newPlayer: true
+rank:
+  build-planning: 1
+  start-here: 3
 status: active
 lastVerified: 2026-09-07
 notes: PoE1 and PoE2 are separate builds from the same project.

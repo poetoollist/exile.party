@@ -18,6 +18,9 @@ platforms:
 pricing: free
 openSource: true
 source: https://github.com/veiset/poe.re
+editorsPick: true
+rank:
+  regex-and-search: 1
 status: active
 lastVerified: 2026-09-08
 notes: The map-mods generator doubles as a dangerous-mod checker through stash

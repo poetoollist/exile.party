@@ -20,6 +20,9 @@ pricing: free
 openSource: false
 editorsPick: true
 newPlayer: true
+rank:
+  crafting: 1
+  start-here: 4
 status: active
 lastVerified: 2026-09-07
 screenshots:

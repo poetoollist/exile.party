@@ -16,6 +16,9 @@ platforms:
 pricing: free
 openSource: true
 source: https://github.com/veiset/poe.re
+editorsPick: true
+rank:
+  regex-and-search: 2
 status: active
 lastVerified: 2026-09-08
 notes: Shares a codebase with poe.re; league and economy data refresh hourly.

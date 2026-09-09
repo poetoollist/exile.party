@@ -16,6 +16,8 @@ platforms:
 pricing: free
 openSource: false
 editorsPick: true
+rank:
+  economy-and-data: 1
 status: active
 lastVerified: 2026-09-07
 screenshots:

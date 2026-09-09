@@ -11,6 +11,8 @@ platforms:
   - windows
 pricing: free
 openSource: true
+rank:
+  overlays-and-companions: 2
 status: active
 lastVerified: 2026-09-08
 author: ailu
