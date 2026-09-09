@@ -270,3 +270,19 @@ test('back from a picked game does not trap the visitor', async ({ page }) => {
 		await expect(cards.nth(i)).toHaveAttribute('data-games', /\bpoe1\b/);
 	}
 });
+
+test('a tool page with tutorials plays the video in place', async ({ page }) => {
+	await page.goto('/tools/path-of-building');
+	await expect(page.getByRole('heading', { name: 'Tutorials' })).toBeVisible();
+	const facade = page.getByRole('link', { name: /^Play / });
+	await expect(facade).toBeVisible();
+	await expect(facade).toHaveAttribute('href', /youtube\.com\/watch\?v=pF22I1o9lrg/);
+	// Before hydration the facade is a plain link to YouTube; the helper re-clicks until the
+	// listener has swapped it for the player.
+	await untilVisible(
+		() => facade.click(),
+		page.locator('iframe[src*="youtube-nocookie.com/embed/pF22I1o9lrg"]')
+	);
+	await expect(facade).toHaveCount(0);
+	expect(page.context().pages().length).toBe(1);
+});

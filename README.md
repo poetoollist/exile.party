@@ -77,6 +77,7 @@ The catalogue lives in [`tools/`](tools). Adding a tool is one pull request with
 | `author`       | no       | who makes the tool; otherwise the GitHub owner of `source` or `url` is shown                        |
 | `headline`     | no       | one sentence for the tool page, 10 to 120 characters; otherwise the first sentence of `description` |
 | `screenshots`  | no       | list of file names under the tool's `shots/` directory, shown in that order                          |
+| `videos`       | no       | list of `{ youtube, title, channel, byCreator?, game? }`, up to four; `youtube` is the 11-char id   |
 | `status`       | yes      | `active`, `unmaintained`, `dead`                                                                    |
 | `lastVerified` | yes      | `YYYY-MM-DD`; entries older than six months are flagged as stale                                    |
 | `notes`        | no       | one caveat worth knowing, up to 300 characters                                                      |

@@ -27,6 +27,21 @@ const assetFile = (extensions: string) =>
 /** Lives at tools/<tool id>/shots/<file>. */
 const screenshotFile = assetFile('png|webp|jpg');
 
+/** The 11-character id from a watch URL, never the URL itself. */
+const youtubeId = z
+	.string()
+	.regex(/^[A-Za-z0-9_-]{11}$/, 'YouTube video id (11 characters, not a URL)');
+
+export const Video = z.strictObject({
+	youtube: youtubeId,
+	title: z.string().min(1).max(120),
+	channel: z.string().min(1).max(60),
+	/** Made by the tool's own author or team. Shown as a "By the creator" tag. */
+	byCreator: z.boolean().default(false),
+	/** Set when the video covers one game's version of a tool that lists both games. */
+	game: Game.optional()
+});
+
 export const Category = z.strictObject({
 	id,
 	name: z.string().min(1),
@@ -73,7 +88,9 @@ const ToolMetadataObject = z.strictObject({
 	/** A sentence about what the tool does, for the tool page headline. Derived from `description` when absent. */
 	headline: z.string().min(10).max(120).optional(),
 	/** Files under tools/<id>/shots/, shown on the tool page in this order. */
-	screenshots: z.array(screenshotFile).default([])
+	screenshots: z.array(screenshotFile).default([]),
+	/** Tutorial videos, shown on the tool page in this order. */
+	videos: z.array(Video).max(4).default([])
 });
 
 type ToolMetadataShape = z.infer<typeof ToolMetadataObject>;
@@ -113,6 +130,24 @@ function validateToolMetadata(t: ToolMetadataShape, ctx: z.RefinementCtx) {
 			});
 		}
 	}
+	const videoIds = new Set<string>();
+	t.videos.forEach((video, i) => {
+		if (video.game && !t.games.includes(video.game)) {
+			ctx.addIssue({
+				code: 'custom',
+				path: ['videos', i, 'game'],
+				message: `videos[${i}].game must be listed in games`
+			});
+		}
+		if (videoIds.has(video.youtube)) {
+			ctx.addIssue({
+				code: 'custom',
+				path: ['videos', i, 'youtube'],
+				message: `duplicate video ${video.youtube}`
+			});
+		}
+		videoIds.add(video.youtube);
+	});
 }
 
 /** The contents of one tools/<id>/about.yaml file. The directory supplies the id. */
@@ -168,6 +203,7 @@ export type Game = z.infer<typeof Game>;
 export type Pricing = z.infer<typeof Pricing>;
 export type Status = z.infer<typeof Status>;
 export type Platform = z.infer<typeof Platform>;
+export type Video = z.infer<typeof Video>;
 export type Tool = z.infer<typeof Tool>;
 export type Category = z.infer<typeof Category>;
 export type Catalog = z.infer<typeof Catalog>;

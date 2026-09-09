@@ -134,6 +134,68 @@ describe('Tool', () => {
 		expect(Tool.safeParse(input).success).toBe(false);
 	});
 
+	describe('videos', () => {
+		const video = { youtube: 'pF22I1o9lrg', title: 'Getting started', channel: 'Zizaran' };
+
+		it('accepts a valid list and defaults byCreator to false', () => {
+			const t = Tool.parse({ ...valid, videos: [video] });
+			expect(t.videos).toEqual([{ ...video, byCreator: false }]);
+		});
+
+		it('defaults to an empty list when the key is absent', () => {
+			expect(Tool.parse(valid).videos).toEqual([]);
+		});
+
+		it('rejects a full URL as the id', () => {
+			const r = Tool.safeParse({
+				...valid,
+				videos: [{ ...video, youtube: 'https://www.youtube.com/watch?v=pF22I1o9lrg' }]
+			});
+			expect(r.success).toBe(false);
+			expect(r.error?.issues[0].path).toEqual(['videos', 0, 'youtube']);
+		});
+
+		it('rejects a game the tool does not list', () => {
+			const r = Tool.safeParse({ ...valid, videos: [{ ...video, game: 'poe2' }] });
+			expect(r.success).toBe(false);
+			expect(r.error?.issues[0].path).toEqual(['videos', 0, 'game']);
+			expect(r.error?.issues[0].message).toMatch(/must be listed in games/);
+		});
+
+		it('accepts a game the tool lists', () => {
+			const r = Tool.safeParse({ ...valid, videos: [{ ...video, game: 'poe1' }] });
+			expect(r.success).toBe(true);
+		});
+
+		it('rejects two videos with the same id', () => {
+			const r = Tool.safeParse({ ...valid, videos: [video, { ...video, title: 'Again' }] });
+			expect(r.success).toBe(false);
+			expect(r.error?.issues[0].path).toEqual(['videos', 1, 'youtube']);
+			expect(r.error?.issues[0].message).toMatch(/duplicate video pF22I1o9lrg/);
+		});
+
+		it('rejects five videos', () => {
+			const videos = [
+				'aaaaaaaaaaa',
+				'bbbbbbbbbbb',
+				'ccccccccccc',
+				'ddddddddddd',
+				'eeeeeeeeeee'
+			].map((youtube) => ({ ...video, youtube }));
+			expect(Tool.safeParse({ ...valid, videos }).success).toBe(false);
+			expect(Tool.safeParse({ ...valid, videos: videos.slice(0, 4) }).success).toBe(true);
+		});
+
+		it.each([
+			['a short id', { ...video, youtube: 'abc' }],
+			['an empty title', { ...video, title: '' }],
+			['an empty channel', { ...video, channel: '' }],
+			['an unknown key', { ...video, url: 'https://example.com' }]
+		])('rejects %s', (_, input) => {
+			expect(Tool.safeParse({ ...valid, videos: [input] }).success).toBe(false);
+		});
+	});
+
 	it('keeps the directory-owned id and icon out of about.yaml', () => {
 		const metadata: Record<string, unknown> = { ...valid };
 		delete metadata.id;

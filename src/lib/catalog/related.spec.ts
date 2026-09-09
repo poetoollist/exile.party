@@ -21,6 +21,7 @@ const tool = (over: Partial<Tool>): Tool => ({
 	status: 'active',
 	lastVerified: '2026-01-01',
 	screenshots: [],
+	videos: [],
 	...over
 });
 

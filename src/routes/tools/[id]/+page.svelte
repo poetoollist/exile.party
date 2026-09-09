@@ -9,6 +9,7 @@
 	import Screenshots from '$lib/components/Screenshots.svelte';
 	import SiteFooter from '$lib/components/SiteFooter.svelte';
 	import TopBar from '$lib/components/TopBar.svelte';
+	import Videos from '$lib/components/Videos.svelte';
 
 	let { data } = $props();
 	const { tool, category } = $derived(data);
@@ -24,6 +25,9 @@
 
 	/** Null when the headline already said the whole description; the section then has no prose. */
 	const prose = $derived(overview(tool));
+
+	/** Whether the Overview section renders at all; Tutorials drops its top margin when nothing precedes it. */
+	const hasOverview = $derived(!!prose || !!tool.notes || tool.tags.length > 0);
 </script>
 
 <Meta
@@ -110,7 +114,7 @@
 		<div class="min-w-0 lg:order-1">
 			<Screenshots {tool} />
 
-			{#if prose || tool.notes || tool.tags.length > 0}
+			{#if hasOverview}
 				<section class={tool.screenshots.length > 0 ? 'mt-10' : ''}>
 					<h2 class="text-[15px] font-medium tracking-tight text-ink">Overview</h2>
 					{#if prose}
@@ -135,6 +139,8 @@
 					{/if}
 				</section>
 			{/if}
+
+			<Videos {tool} first={tool.screenshots.length === 0 && !hasOverview} />
 		</div>
 	</div>
 
