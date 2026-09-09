@@ -81,6 +81,11 @@ describe('repoLinks', () => {
 		expect(repoLinks(t)).toEqual([{ game: null, url: 'https://github.com/a/b' }]);
 	});
 
+	it('uses the primary URL when it is also the open-source repository', () => {
+		const t = tool({ openSource: true, url: 'https://github.com/a/b' });
+		expect(repoLinks(t)).toEqual([{ game: null, url: 'https://github.com/a/b' }]);
+	});
+
 	it('prefers per-game sources when present', () => {
 		const t = tool({
 			openSource: true,

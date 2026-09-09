@@ -1,0 +1,32 @@
+name: Hinekora
+description: A gameplay recorder with a rewind buffer, automatic death clips,
+  replay editing, bookmarks, and configurable aura overlays for both Path of
+  Exile games.
+url: https://github.com/navali-creations/hinekora
+games:
+  - poe1
+  - poe2
+category: overlays-and-companions
+platforms:
+  - windows
+pricing: free
+openSource: true
+status: active
+lastVerified: 2026-09-08
+author: ailu
+headline: Record, replay, and edit Path of Exile gameplay with automatic death clips
+tags:
+  - gameplay-recorder
+  - replay-buffer
+  - video-editor
+  - aura-overlay
+notes: Aura Manager mirrors the game through OBS; its Terms of Service status is
+  uncertain, so use it at your own risk.
+byMaintainer: true
+screenshots:
+  - app.png
+  - clip.png
+  - editor.png
+  - bookmarks.png
+  - auras.png
+  - auras-2.png

@@ -1,0 +1,33 @@
+name: Soothsayer
+description: Tracks stacked deck openings in real time, calculates live session
+  profit from market prices, and provides card rarity and performance analytics.
+url: https://github.com/navali-creations/soothsayer
+games:
+  - poe1
+category: overlays-and-companions
+platforms:
+  - windows
+  - linux
+pricing: free
+openSource: true
+status: active
+lastVerified: 2026-09-08
+author: ailu
+headline: Real-time stacked deck tracking with live profit and rarity insights
+tags:
+  - stacked-decks
+  - session-tracker
+  - profit-tracking
+notes: Path of Exile 2 support is implemented, but stacked decks are not
+  currently available there.
+byMaintainer: true
+screenshots:
+  - current-session.png
+  - session-detail.png
+  - stats.png
+  - cards.png
+  - card-detail.png
+  - profit-forecast.png
+  - rarity-insights.png
+  - app-performance.png
+  - app-performance-summary.png

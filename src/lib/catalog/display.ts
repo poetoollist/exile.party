@@ -57,7 +57,8 @@ export function siteLinks(tool: Tool): GameLink[] {
 export function repoLinks(tool: Tool): GameLink[] {
 	const split = perGame(tool.sources, tool.games);
 	if (split.length > 0) return split;
-	return tool.source ? [{ game: null, url: tool.source }] : [];
+	if (tool.source) return [{ game: null, url: tool.source }];
+	return tool.openSource ? [{ game: null, url: tool.url }] : [];
 }
 
 export const GAME_LABEL = { poe1: 'PoE 1', poe2: 'PoE 2' } as const;

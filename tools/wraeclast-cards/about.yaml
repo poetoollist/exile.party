@@ -1,0 +1,25 @@
+name: wraeclast.cards
+description: A league-aware divination card database with reward details, search
+  filters, and observed stacked deck drop rates from Soothsayer uploads.
+url: https://wraeclast.cards/
+games:
+  - poe1
+category: economy-and-data
+platforms:
+  - web
+pricing: free
+openSource: true
+status: active
+lastVerified: 2026-09-08
+author: ailu
+headline: League-aware divination card data and observed stacked deck drop rates
+tags:
+  - divination-cards
+  - drop-rates
+  - data
+  - stacked-decks
+byMaintainer: true
+screenshots:
+  - homepage.png
+  - cards.png
+  - stacked-decks.png
