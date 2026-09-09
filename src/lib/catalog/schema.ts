@@ -61,6 +61,8 @@ const ToolMetadataObject = z.strictObject({
 	/** Published by Grinding Gear Games rather than the community. */
 	official: z.boolean().default(false),
 	editorsPick: z.boolean().default(false),
+	/** Listed in the Start here section for new players. Independent of editorsPick. */
+	newPlayer: z.boolean().default(false),
 	/** Written by someone who maintains this directory. Disclosed on the card. */
 	byMaintainer: z.boolean().default(false),
 	status: Status,
@@ -101,7 +103,7 @@ function validateToolMetadata(t: ToolMetadataShape, ctx: z.RefinementCtx) {
 			path: ['alsoIn']
 		});
 	}
-	const sectionIds = new Set([t.category, ...t.alsoIn, ...(t.editorsPick ? [START_HERE_ID] : [])]);
+	const sectionIds = new Set([t.category, ...t.alsoIn, ...(t.newPlayer ? [START_HERE_ID] : [])]);
 	for (const key of Object.keys(t.rank ?? {})) {
 		if (!sectionIds.has(key)) {
 			ctx.addIssue({

@@ -16,6 +16,7 @@ const tool = (over: Partial<Tool>): Tool => ({
 	openSource: false,
 	official: false,
 	editorsPick: false,
+	newPlayer: false,
 	byMaintainer: false,
 	status: 'active',
 	lastVerified: '2026-01-01',

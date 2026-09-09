@@ -173,9 +173,10 @@ test('Start here leads the directory and the rail reaches it', async ({ page }) 
 
 test("an editor's pick carries a star on its card", async ({ page }) => {
 	await page.goto('/tools');
-	const first = page.locator('#cat-start-here li').first();
-	await expect(first.getByTitle('Editor’s pick')).toBeAttached();
-	await expect(first.getByText('Editor’s pick')).toBeAttached();
+	const star = page.getByTitle('Editor’s pick').first();
+	await expect(star).toBeAttached();
+	const card = star.locator('xpath=ancestor::li[1]');
+	await expect(card.getByText('Editor’s pick')).toBeAttached();
 });
 
 test('a tool with alsoIn is listed under each of its categories', async ({ page }) => {

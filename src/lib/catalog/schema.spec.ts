@@ -21,6 +21,7 @@ describe('Tool', () => {
 		expect(t.tags).toEqual([]);
 		expect(t.official).toBe(false);
 		expect(t.editorsPick).toBe(false);
+		expect(t.newPlayer).toBe(false);
 		expect(t.byMaintainer).toBe(false);
 	});
 
@@ -69,17 +70,23 @@ describe('Tool', () => {
 		expect(r.success).toBe(true);
 	});
 
-	it('accepts a start-here rank alongside a category rank when the tool is an editors pick', () => {
+	it('accepts a start-here rank alongside a category rank when the tool is a new-player pick', () => {
 		const r = Tool.safeParse({
 			...valid,
-			editorsPick: true,
+			newPlayer: true,
 			rank: { trade: 1, 'start-here': 2 }
 		});
 		expect(r.success).toBe(true);
 	});
 
-	it('rejects a start-here rank without editorsPick', () => {
+	it('rejects a start-here rank without newPlayer', () => {
 		const r = Tool.safeParse({ ...valid, rank: { 'start-here': 1 } });
+		expect(r.success).toBe(false);
+		expect(r.error?.issues[0].path).toEqual(['rank', 'start-here']);
+	});
+
+	it('rejects a start-here rank when only editorsPick is set', () => {
+		const r = Tool.safeParse({ ...valid, editorsPick: true, rank: { 'start-here': 1 } });
 		expect(r.success).toBe(false);
 		expect(r.error?.issues[0].path).toEqual(['rank', 'start-here']);
 	});

@@ -5,7 +5,8 @@ import {
 	inSection,
 	sections,
 	sectionPreview,
-	sortTools
+	sortTools,
+	START_HERE
 } from './home';
 import { START_HERE_ID, type Catalog, type Tool } from './schema';
 
@@ -22,6 +23,7 @@ const tool = (over: Partial<Tool> & { id: string }): Tool => ({
 	openSource: false,
 	official: false,
 	editorsPick: false,
+	newPlayer: false,
 	byMaintainer: false,
 	status: 'active',
 	lastVerified: '2026-01-01',
@@ -37,12 +39,12 @@ const catalog: Catalog = {
 		{ id: 'data', name: 'Data', description: 'Numbers.' }
 	],
 	tools: [
-		tool({ id: 'pob', category: 'build', games: ['poe1', 'poe2'], editorsPick: true }),
-		tool({ id: 'awakened', category: 'trade', games: ['poe1'], editorsPick: true }),
-		tool({ id: 'exchange2', category: 'trade', games: ['poe2'], editorsPick: true }),
+		tool({ id: 'pob', category: 'build', games: ['poe1', 'poe2'], newPlayer: true }),
+		tool({ id: 'awakened', category: 'trade', games: ['poe1'], newPlayer: true }),
+		tool({ id: 'exchange2', category: 'trade', games: ['poe2'], newPlayer: true }),
 		tool({ id: 'sidekick', category: 'trade', games: ['poe1', 'poe2'] }),
-		tool({ id: 'ninja', category: 'data', games: ['poe1', 'poe2'], editorsPick: true }),
-		tool({ id: 'poe2db', category: 'data', games: ['poe2'], editorsPick: true })
+		tool({ id: 'ninja', category: 'data', games: ['poe1', 'poe2'], newPlayer: true }),
+		tool({ id: 'poe2db', category: 'data', games: ['poe2'], newPlayer: true })
 	]
 };
 
@@ -92,17 +94,25 @@ describe('sections', () => {
 		]);
 		expect(sections(catalog.categories)[0].name).toBe('Start here');
 	});
+
+	it('describes Start here as the tools a new player should install first', () => {
+		expect(START_HERE.description).toBe('The tools a new player should install first.');
+	});
 });
 
 describe('inSection', () => {
-	const t = tool({ id: 'x', category: 'trade', alsoIn: ['maps'], editorsPick: true });
+	const t = tool({ id: 'x', category: 'trade', alsoIn: ['maps'], newPlayer: true });
 
-	it('matches the primary category, a secondary one, and Start here for a pick', () => {
+	it('matches the primary category, a secondary one, and Start here for a new-player tool', () => {
 		expect(inSection(t, 'trade')).toBe(true);
 		expect(inSection(t, 'maps')).toBe(true);
 		expect(inSection(t, START_HERE_ID)).toBe(true);
 		expect(inSection(t, 'build')).toBe(false);
 		expect(inSection(tool({ id: 'y' }), START_HERE_ID)).toBe(false);
+	});
+
+	it('is false for Start here when the tool is only an editors pick', () => {
+		expect(inSection(tool({ id: 'z', editorsPick: true }), START_HERE_ID)).toBe(false);
 	});
 });
 
@@ -125,21 +135,21 @@ describe('groupBySection', () => {
 		expect(groups[0].name).toBe('Trade');
 	});
 
-	it('lists an alsoIn tool under both sections and a pick under Start here first', () => {
+	it('lists an alsoIn tool under both sections and a new-player tool under Start here first', () => {
 		const tools = [
 			tool({
 				id: 'overlay',
 				name: 'Overlay',
 				category: 'trade',
 				alsoIn: ['crafting'],
-				editorsPick: true
+				newPlayer: true
 			}),
 			tool({ id: 'bench', name: 'Bench', category: 'crafting' })
 		];
 		const groups = groupBySection(secs, tools);
 		expect(groups.map((g) => g.id)).toEqual([START_HERE_ID, 'trade', 'crafting']);
 		expect(groups[0].tools.map((t) => t.id)).toEqual(['overlay']);
-		expect(groups[0].description).toBe('Editor’s picks: the tools most players install first.');
+		expect(groups[0].description).toBe('The tools a new player should install first.');
 		expect(groups[2].tools.map((t) => t.id)).toEqual(['bench', 'overlay']);
 	});
 
@@ -168,14 +178,14 @@ describe('groupBySection', () => {
 				id: 'first',
 				name: 'Zed',
 				category: 'trade',
-				editorsPick: true,
+				newPlayer: true,
 				rank: { trade: 5, 'start-here': 1 }
 			}),
 			tool({
 				id: 'second',
 				name: 'Alpha',
 				category: 'trade',
-				editorsPick: true,
+				newPlayer: true,
 				rank: { trade: 1 }
 			})
 		];

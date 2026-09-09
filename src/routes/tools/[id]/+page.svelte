@@ -75,13 +75,20 @@
 					<p class="truncate text-[15px] leading-tight font-medium tracking-tight text-ink">
 						{tool.name}
 					</p>
-					{#if tool.editorsPick || tool.official}
+					{#if tool.editorsPick || tool.official || tool.newPlayer}
 						<p class="mt-1 flex flex-wrap gap-1">
 							{#if tool.editorsPick}
 								<span
 									class="rounded border border-accent-line bg-accent-tint px-1.5 py-px text-[10.5px] leading-4 text-accent"
 								>
 									Editor&rsquo;s pick
+								</span>
+							{/if}
+							{#if tool.newPlayer}
+								<span
+									class="rounded border border-accent-line bg-accent-tint px-1.5 py-px text-[10.5px] leading-4 text-accent"
+								>
+									For new players
 								</span>
 							{/if}
 							{#if tool.official}

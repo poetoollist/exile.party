@@ -71,6 +71,7 @@ The catalogue lives in [`tools/`](tools). Adding a tool is one pull request with
 | `sources`      | no       | `{ poe1, poe2 }` for projects with a repository per game                                            |
 | `official`     | no       | published by Grinding Gear Games rather than the community                                          |
 | `editorsPick`  | no       | what we would hand a new player first                                                               |
+| `newPlayer`    | no       | listed in the Start here section for new players; independent of editorsPick                        |
 | `rank`         | no       | map of section id to position; ranked tools lead that section, then A to Z                          |
 | `byMaintainer` | no       | written by a maintainer of this site; the card discloses it                                         |
 | `author`       | no       | who makes the tool; otherwise the GitHub owner of `source` or `url` is shown                        |

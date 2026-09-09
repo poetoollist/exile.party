@@ -11,7 +11,7 @@ export function countByGame(tools: readonly Tool[]): Record<Game, number> {
 export const START_HERE: Category = {
 	id: START_HERE_ID,
 	name: 'Start here',
-	description: 'Editor’s picks: the tools most players install first.'
+	description: 'The tools a new player should install first.'
 };
 
 const rankOf = (t: Tool, sectionId: string) => t.rank?.[sectionId] ?? Number.MAX_SAFE_INTEGER;
@@ -28,9 +28,9 @@ export function sections(categories: readonly Category[]): Category[] {
 	return [START_HERE, ...categories];
 }
 
-/** Start here holds the editor's picks; a category holds its primary tools and its `alsoIn` tools. */
+/** Start here holds the new-player tools; a category holds its primary tools and its `alsoIn` tools. */
 export function inSection(tool: Tool, sectionId: string): boolean {
-	if (sectionId === START_HERE_ID) return tool.editorsPick;
+	if (sectionId === START_HERE_ID) return tool.newPlayer;
 	return tool.category === sectionId || tool.alsoIn.includes(sectionId);
 }
 
