@@ -160,7 +160,8 @@ test('the category rail jumps to its section', async ({ page }) => {
 	await expect(page.locator('#cat-trade')).toBeInViewport();
 });
 
-test('Start here leads the directory and the rail reaches it', async ({ page }) => {
+// Start here is hidden for now (ToolDirectory.svelte); restore the section, then unskip.
+test.skip('Start here leads the directory and the rail reaches it', async ({ page }) => {
 	await page.goto('/tools');
 	await expect(page.locator('main section h2').first()).toHaveText('Start here');
 	await page
