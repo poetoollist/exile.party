@@ -160,8 +160,7 @@ test('the category rail jumps to its section', async ({ page }) => {
 	await expect(page.locator('#cat-trade')).toBeInViewport();
 });
 
-// Start here is hidden for now (ToolDirectory.svelte); restore the section, then unskip.
-test.skip('Start here leads the directory and the rail reaches it', async ({ page }) => {
+test('Start here leads the directory and the rail reaches it', async ({ page }) => {
 	await page.goto('/tools');
 	await expect(page.locator('main section h2').first()).toHaveText('Start here');
 	await page
@@ -170,6 +169,16 @@ test.skip('Start here leads the directory and the rail reaches it', async ({ pag
 		.click();
 	await expect(page).toHaveURL(/\/tools#cat-start-here$/);
 	await expect(page.locator('#cat-start-here')).toBeInViewport();
+});
+
+test('Start here is Path of Building, the game wiki and poe.ninja, in that order', async ({
+	page
+}) => {
+	const names = page.locator('#cat-start-here li a[href^="/tools/"]');
+	await page.goto('/poe1');
+	await expect(names).toHaveText(['Path of Building', 'Path of Exile Wiki', 'poe.ninja']);
+	await page.goto('/poe2');
+	await expect(names).toHaveText(['Path of Building', 'Path of Exile 2 Wiki', 'poe.ninja']);
 });
 
 test("an editor's pick carries a star on its card", async ({ page }) => {

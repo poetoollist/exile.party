@@ -16,7 +16,7 @@
 		toSearchParams,
 		type Filters
 	} from '$lib/catalog/filter';
-	import { groupBySection, inSection, sectionPreview } from '$lib/catalog/home';
+	import { groupBySection, inSection, sections, sectionPreview } from '$lib/catalog/home';
 	import { Platform, type Catalog, type Game } from '$lib/catalog/schema';
 	import { searchPalette } from '$lib/search.svelte';
 	import { submitDialog } from '$lib/submit.svelte';
@@ -63,8 +63,8 @@
 
 	const visible = $derived(filterTools(pool, filters));
 
-	/** Every catalogue category. Start here is hidden for now; `sections(catalog.categories)` brings it back. */
-	const secs = $derived(catalog.categories);
+	/** Start here, then every catalogue category. */
+	const secs = $derived(sections(catalog.categories));
 	const groups = $derived(groupBySection(secs, visible));
 
 	/** Every section with a tool in the pool, counted after filters; a filtered-out one stays, dimmed. */

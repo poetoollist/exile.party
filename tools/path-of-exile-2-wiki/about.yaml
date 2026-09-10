@@ -15,6 +15,9 @@ platforms:
   - web
 pricing: free
 openSource: false
+newPlayer: true
+rank:
+  start-here: 3
 status: active
 lastVerified: 2026-09-08
 notes: Still marked work in progress by its editors. Bot protection may show a
