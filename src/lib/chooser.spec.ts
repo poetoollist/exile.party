@@ -2,21 +2,27 @@ import { describe, expect, it } from 'vitest';
 import {
 	FADE_DEPTH_STACKED,
 	FADE_DEPTH_WIDE,
+	FADE_EASE,
+	FADE_MS,
+	FADE_SHOWN,
 	FULL_POLYGON,
 	OVERLAP_MS,
 	PUSH_IN,
 	REVEAL_MS,
+	SWEEP_EASE,
 	SWEEP_MS,
 	chooserPolygon,
 	coverFit,
 	edgePolygon,
+	fadeHidden,
 	fadeRect,
 	pinRect,
 	pushOrigin,
 	pushReach,
 	seamExitPolygon,
 	sideOf,
-	type Side
+	type Side,
+	type Size
 } from './chooser';
 
 const SIDES: readonly Side[] = ['left', 'right', 'top', 'bottom'];
@@ -369,5 +375,67 @@ describe('fadeRect', () => {
 		expect(
 			fadeRect('bottom', panel, { left: 0, top: -50, width: 1600, height: 950 }, 160, 20)
 		).toBeNull();
+	});
+});
+
+type Edge = 'top' | 'right' | 'bottom' | 'left';
+
+/** The four insets of `inset(t r b l)`, as written. */
+function insets(clip: string): Record<Edge, string> {
+	const inner = /^inset\((.*)\)$/.exec(clip);
+	if (!inner) throw new Error(`not an inset: ${clip}`);
+	const parts = inner[1].split(' ');
+	if (parts.length !== 4) throw new Error(`expected four insets: ${clip}`);
+	const [top, right, bottom, left] = parts;
+	return { top, right, bottom, left };
+}
+
+/** The band's far end: opposite the half's own edge, where the image's far edge points. */
+const FAR_END: Record<Side, Edge> = { left: 'right', right: 'left', top: 'bottom', bottom: 'top' };
+
+describe('fade reveal', () => {
+	it('opens well inside the sweep, on a curve that starts faster than the sweep', () => {
+		expect(FADE_MS).toBeGreaterThan(0);
+		expect(FADE_MS).toBeLessThan(SWEEP_MS);
+		// The first control point's y is the initial slope; higher starts faster.
+		const slopeOf = (bezier: string) => Number(bezier.match(/\(([^,]+),\s*([^,]+)/)?.[2]);
+		expect(slopeOf(FADE_EASE)).toBeGreaterThanOrEqual(slopeOf(SWEEP_EASE));
+		expect(FADE_EASE).not.toBe(SWEEP_EASE);
+	});
+
+	it('shown: nothing inset', () => {
+		expect(insets(FADE_SHOWN)).toEqual({ top: '0px', right: '0px', bottom: '0px', left: '0px' });
+	});
+
+	it.each(SIDES)('%s: hidden collapses the band onto its far end', (side) => {
+		const hidden = insets(fadeHidden(side));
+		// Fully inset from the near edge, not at all from the far one, so the reveal grows out of the
+		// far end and reaches the image edge, `reach` in from it, first.
+		expect(hidden[FAR_END[side]]).toBe('0px');
+		for (const edge of Object.keys(hidden) as Edge[]) {
+			expect(hidden[edge]).toBe(edge === side ? '100%' : '0px');
+		}
+	});
+
+	it('covers the image edge in the first fraction of the reveal, side by side and stacked', () => {
+		const POE1: Size = { width: 1800, height: 1600 };
+		const POE2: Size = { width: 1800, height: 1473 };
+		const cases: [Side, Size, Size][] = [
+			['left', { width: 1440, height: 900 }, POE1],
+			['right', { width: 1739, height: 893 }, POE2],
+			['top', { width: 390, height: 600 }, POE1],
+			['bottom', { width: 390, height: 600 }, POE2]
+		];
+		for (const [side, panel, natural] of cases) {
+			const stacked = side === 'top' || side === 'bottom';
+			const depth = stacked ? FADE_DEPTH_STACKED : FADE_DEPTH_WIDE;
+			const image = pinRect(side, panel, natural);
+			const reach = pushReach(side, image);
+			expect(fadeRect(side, panel, image, depth, reach)).not.toBeNull();
+			// The edge sits `reach` from the far end, so this fraction of the band covers it. Expo-out
+			// easing is a quarter of the way in under a thirtieth of FADE_MS, before the sweep can
+			// uncover the edge at any geometry.
+			expect(reach / (depth + reach)).toBeLessThan(0.25);
+		}
 	});
 });

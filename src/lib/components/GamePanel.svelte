@@ -9,17 +9,22 @@
 	import {
 		FADE_DEPTH_STACKED,
 		FADE_DEPTH_WIDE,
+		FADE_EASE,
+		FADE_MS,
+		FADE_SHOWN,
 		FULL_POLYGON,
 		PUSH_IN,
 		REVEAL_MS,
 		SWEEP_EASE,
 		SWEEP_MS,
+		fadeHidden,
 		fadeRect,
 		pinRect,
 		pushOrigin,
 		pushReach,
 		sideOf,
-		type Rect
+		type Rect,
+		type Side
 	} from '$lib/chooser';
 
 	interface Props {
@@ -50,6 +55,9 @@
 	let img = $state<HTMLImageElement | null>(null);
 	let fade = $state<HTMLDivElement | null>(null);
 	let pinned = $state(false);
+	/* The side pin() laid the half out for; the pick's fade reveal needs it. Nothing renders from
+	   it, so plain. */
+	let pinSide: Side = 'left';
 
 	function place(el: HTMLElement, rect: Rect) {
 		el.style.left = `${rect.left}px`;
@@ -64,7 +72,7 @@
 	function pin() {
 		if (!panel || !img || !fade || !img.naturalWidth) return;
 		const stacked = !matchMedia('(min-width: 768px)').matches;
-		const pinSide = sideOf(game, stacked);
+		pinSide = sideOf(game, stacked);
 		// Fractional size: clientWidth/Height round, and the box is a percentage of the real one.
 		const { width, height } = panel.getBoundingClientRect();
 		const rect = pinRect(
@@ -78,13 +86,14 @@
 		const origin = pushOrigin(pinSide);
 		img.style.transformOrigin = `${origin.x * 100}% ${origin.y * 100}%`;
 		// The fade sits over the image's far edge and reaches to where the push-in leaves it; there
-		// is none if the image reaches the panel's edge.
+		// is none if the image reaches the panel's edge. At rest it is clipped to its far end.
 		const depth = stacked ? FADE_DEPTH_STACKED : FADE_DEPTH_WIDE;
 		const reach = pushReach(pinSide, rect);
 		const band = fadeRect(pinSide, { width, height }, rect, depth, reach);
 		fade.style.display = band ? '' : 'none';
 		fade.style.setProperty('--depth', `${depth}px`);
 		if (band) place(fade, band);
+		fade.style.clipPath = fadeHidden(pinSide);
 		pinned = true;
 	}
 
@@ -106,11 +115,12 @@
 		};
 	});
 
-	/* The sweep opens the half from wherever the hover transition left it; the push-in runs on
-	   through the page reveal. Both are cancelled if the pick is handed back, which is what
-	   returns the half to rest after a failed navigation. */
+	/* The sweep opens the half from wherever the hover transition left it; the fade opens from its
+	   far end, so the image edge is covered before the sweep uncovers it; the push-in runs on
+	   through the page reveal. All are cancelled if the pick is handed back, which is what returns
+	   the half to rest after a failed navigation. */
 	$effect(() => {
-		if (!isPicked || !panel || !img) return;
+		if (!isPicked || !panel || !img || !fade) return;
 		if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 		const running = [
 			panel.animate([{ clipPath: getComputedStyle(panel).clipPath }, { clipPath: FULL_POLYGON }], {
@@ -121,6 +131,11 @@
 			img.animate([{ transform: 'scale(1)' }, { transform: `scale(${PUSH_IN})` }], {
 				duration: SWEEP_MS + REVEAL_MS,
 				easing: SWEEP_EASE,
+				fill: 'forwards'
+			}),
+			fade.animate([{ clipPath: fadeHidden(pinSide) }, { clipPath: FADE_SHOWN }], {
+				duration: FADE_MS,
+				easing: FADE_EASE,
 				fill: 'forwards'
 			})
 		];
@@ -258,24 +273,22 @@
 	}
 
 	/* Where the image stops short of the far edge it must end in canvas rather than a hard line.
-	   pin() lays this band over that edge; it is invisible at rest and on hover and fades in over
-	   the sweep. Opacity stays on the compositor, where a mask would re-rasterise every frame.
-	   The band reaches past the image because the push-in grows the image towards the far edge
-	   under a fade that does not move with it; the gradient is solid from --depth on so that
-	   overreach is plain canvas. The canvas literal, as .panel's background is. */
+	   pin() lays this band over that edge, clipped to nothing at its far end. The sweep uncovers
+	   the image edge within its first frames, sooner the smaller the screen, so the fade cannot
+	   arrive by opacity: at the pick the clip opens from the far end, covering the edge at once,
+	   and the depth the hover showed darkens last and gently. clip-path stays on the compositor,
+	   where a mask would re-rasterise every frame. The band reaches past the image because the
+	   push-in grows the image towards the far edge under a fade that does not move with it; the
+	   gradient is solid from --depth on so that overreach is plain canvas. The canvas literal, as
+	   .panel's background is. */
 	.fade {
-		opacity: 0;
-		transition: opacity 420ms cubic-bezier(0.33, 1, 0.68, 1);
-		will-change: opacity;
+		will-change: clip-path;
 	}
 	.panel-left .fade {
 		background: linear-gradient(to bottom, transparent, #141619 var(--depth));
 	}
 	.panel-right .fade {
 		background: linear-gradient(to top, transparent, #141619 var(--depth));
-	}
-	.panel[data-picked] .fade {
-		opacity: 1;
 	}
 
 	/* Dark in both themes: the values are the dark canvas token, not a theme variable. */

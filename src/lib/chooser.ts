@@ -183,11 +183,34 @@ export function pushReach(side: Side, image: Size): number {
 }
 
 /* Where the pinned image stops short of the far edge it must end in canvas, not a hard line.
-   A gradient overlay does that with an opacity transition, which stays on the compositor; a mask
-   on the image would be re-rasterised every frame of the sweep. Deeper side by side, where the
-   image has more room to run out. */
+   A gradient overlay does that, revealed by a clip; both stay on the compositor, where a mask on
+   the image would be re-rasterised every frame of the sweep. Deeper side by side, where the image
+   has more room to run out. */
 export const FADE_DEPTH_WIDE = 260;
 export const FADE_DEPTH_STACKED = 160;
+
+/* The sweep uncovers the image's far edge within its first frames, sooner the smaller the screen,
+   so the fade cannot arrive over time. It opens from the band's far end instead: the edge sits
+   `reach` in from there and is covered at once, and the depth the hover showed darkens last.
+   Expo-out, not the sweep's cubic-out: on a high-refresh display the seam can pass the edge
+   within a frame or two, and expo-out has the edge covered in half the time. */
+export const FADE_MS = 180;
+export const FADE_EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
+export const FADE_SHOWN = 'inset(0px 0px 0px 0px)';
+
+/** The band at rest: collapsed onto its far end, so fully inset from the half's own edge. */
+export function fadeHidden(side: Side): string {
+	switch (side) {
+		case 'left':
+			return 'inset(0px 0px 0px 100%)';
+		case 'right':
+			return 'inset(0px 100% 0px 0px)';
+		case 'top':
+			return 'inset(100% 0px 0px 0px)';
+		case 'bottom':
+			return 'inset(0px 0px 100% 0px)';
+	}
+}
 
 /** The overlay in the panel's own coordinates: a band from `depth` inside the image's far edge to
  *  `reach` past it, spanning the panel on the cross axis. The push-in grows the image towards
