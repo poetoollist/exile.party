@@ -3,11 +3,22 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type { Game } from '$lib/catalog/schema';
+	import {
+		OVERLAP_MS,
+		REVEAL_EASE,
+		REVEAL_MS,
+		SWEEP_EASE,
+		SWEEP_MS,
+		chooserPolygon,
+		edgePolygon,
+		seamExitPolygon,
+		sideOf,
+		type Side
+	} from '$lib/chooser';
 	import GamePanel from '$lib/components/GamePanel.svelte';
 	import Mark from '$lib/components/Mark.svelte';
 	import Meta from '$lib/components/Meta.svelte';
 	import { gameStore, rememberGame } from '$lib/game';
-	import { cubicOut } from 'svelte/easing';
 	import type { TransitionConfig } from 'svelte/transition';
 
 	let { data } = $props();
@@ -18,11 +29,16 @@
 	const SEAM_BOTTOM = 46;
 	const SHIFT = 8;
 
-	// The length of the outro below.
-	const EXIT_MS = 900;
-
 	let hovered = $state<Game | null>(null);
 	let picked = $state<Game | null>(null);
+	/* Fixed at the pick: which edge the page comes in from, and when the click landed. */
+	let side: Side = 'left';
+	let pickedAt = 0;
+
+	let seam = $state<HTMLDivElement | null>(null);
+	let edge = $state<HTMLDivElement | null>(null);
+	/* The seam's sweep, kept so a failed navigation can cancel it. */
+	let running: Animation[] = [];
 
 	const shift = $derived(hovered === 'poe2' ? -SHIFT : hovered === 'poe1' ? SHIFT : 0);
 	const seamTop = $derived(SEAM_TOP + shift);
@@ -30,6 +46,7 @@
 
 	/* Touch fires pointerenter on tap; only real pointers get the hover move. */
 	const canHover = browser && matchMedia('(hover: hover)').matches;
+	const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 	function hover(game: Game | null) {
 		if (canHover && picked === null) hovered = game;
@@ -38,26 +55,48 @@
 	async function pick(game: Game, href: string) {
 		if (picked !== null) return;
 		picked = game;
+		pickedAt = performance.now();
+		side = sideOf(game, !matchMedia('(min-width: 768px)').matches);
 		rememberGame(game, gameStore());
+		/* The hairline leaves with the picked half, from wherever the hover shift has it. The
+		   half's own sweep is GamePanel's. */
+		if (seam && !still()) {
+			running = [
+				seam.animate(
+					[{ clipPath: getComputedStyle(seam).clipPath }, { clipPath: seamExitPolygon(side) }],
+					{ duration: SWEEP_MS, easing: SWEEP_EASE, fill: 'forwards' }
+				)
+			];
+		}
 		try {
 			// eslint-disable-next-line svelte/no-navigation-without-resolve -- href comes from GamePanel's resolve() call; the rule cannot see through the onpick prop boundary
 			await goto(href, { replaceState: true });
 		} catch {
 			// A failed navigation hands the chooser back rather than leaving it half picked.
+			for (const animation of running) animation.cancel();
+			running = [];
 			picked = null;
 		}
 	}
 
-	/* Plays as SvelteKit removes the page: the root is pinned over the new page and --exit runs
-	   0 to 1, which the stylesheet turns into the picked half opening and everything else fading. */
+	/* Plays as SvelteKit removes the page: the root is pinned over the new page and clipped to
+	   what the reveal has not yet uncovered, so the page shows through an edge at the seam's
+	   angle. The edge waits for the sweep to be nearly done, or for a slow navigation. */
 	function exit(node: HTMLElement): TransitionConfig {
-		const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-		if (picked === null || still) return { duration: 0 };
-		return {
-			duration: EXIT_MS,
-			easing: cubicOut,
-			tick: (_t, u) => node.style.setProperty('--exit', String(u))
+		if (picked === null || still()) return { duration: 0 };
+		const delay = Math.max(0, SWEEP_MS - OVERLAP_MS - (performance.now() - pickedAt));
+		const timing: KeyframeAnimationOptions = {
+			delay,
+			duration: REVEAL_MS,
+			easing: REVEAL_EASE,
+			fill: 'both'
 		};
+		node.animate(
+			[{ clipPath: chooserPolygon(side, 0) }, { clipPath: chooserPolygon(side, 1) }],
+			timing
+		);
+		edge?.animate([{ clipPath: edgePolygon(side, 0) }, { clipPath: edgePolygon(side, 1) }], timing);
+		return { duration: delay + REVEAL_MS };
 	}
 </script>
 
@@ -141,10 +180,15 @@
 			onpick={pick}
 		/>
 
-		<div class="seam pointer-events-none absolute inset-0" aria-hidden="true"></div>
+		<!-- Above a raised half, so the hairline and the glow stay on top of the art. -->
+		<div
+			bind:this={seam}
+			class="seam pointer-events-none absolute inset-0 z-2"
+			aria-hidden="true"
+		></div>
 
 		<div
-			class="glow pointer-events-none absolute left-1/2 hidden md:block"
+			class="glow pointer-events-none absolute left-1/2 z-2 hidden md:block"
 			aria-hidden="true"
 		></div>
 	</div>
@@ -154,22 +198,25 @@
 	>
 		Artwork by Grinding Gear Games. Not affiliated with GGG.
 	</p>
+
+	<!-- The reveal's own hairline: rides the advancing edge on the chooser's side, above everything. -->
+	<div
+		bind:this={edge}
+		class="edge pointer-events-none absolute inset-0 z-20"
+		aria-hidden="true"
+	></div>
 </div>
 
 <style>
 	@reference './layout.css';
 
-	/* The root floats over the new page from the moment a half is picked; --exit is still 0
-	   until the outro runs, so nothing changes visually until then. */
+	/* The root floats over the new page from the moment a half is picked; the reveal clips it
+	   away once the navigation has landed. */
 	.chooser[data-picked] {
 		position: fixed;
 		inset: 0;
 		z-index: 50;
 		pointer-events: none;
-		opacity: clamp(0, 1 - (var(--exit, 0) - 0.3) / 0.7, 1);
-	}
-	.chooser[data-picked] :is(.band, .seam, .credit, .glow) {
-		opacity: calc(1 - min(1, var(--exit, 0) * 2));
 	}
 
 	/* One-pixel hairline clipped out of a full-size box, so it slides with the panels. */
@@ -192,6 +239,12 @@
 				calc(var(--seam-bottom) - 0.5px) 100%
 			);
 		}
+	}
+
+	/* Invisible until the reveal animates it into a band along the edge. */
+	.edge {
+		background: color-mix(in srgb, var(--ink) 50%, transparent);
+		clip-path: polygon(0% 0%, 0% 0%, 0% 0%, 0% 0%);
 	}
 
 	/* Darkens the art behind the headline block. */

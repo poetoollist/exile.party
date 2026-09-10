@@ -6,13 +6,26 @@
 	import poe2Webp from '$lib/assets/chooser/poe2.webp';
 	import { GAME_NAME } from '$lib/catalog/display';
 	import type { Game } from '$lib/catalog/schema';
+	import {
+		FADE_DEPTH_STACKED,
+		FADE_DEPTH_WIDE,
+		FULL_POLYGON,
+		PUSH_IN,
+		REVEAL_MS,
+		SWEEP_EASE,
+		SWEEP_MS,
+		fadeRect,
+		pinRect,
+		sideOf,
+		type Rect
+	} from '$lib/chooser';
 
 	interface Props {
 		game: Game;
 		count: number;
 		/** The half the pointer or keyboard focus is on, if any. */
 		hovered: Game | null;
-		/** The half that has been picked and is opening into the exit, if any. */
+		/** The half that has been picked and is sweeping open, if any. */
 		picked: Game | null;
 		onhover: (game: Game | null) => void;
 		onpick: (game: Game, href: string) => void;
@@ -30,11 +43,89 @@
 	const hot = $derived(hovered === game);
 	const dimmed = $derived(hovered !== null && hovered !== game);
 	const isPicked = $derived(picked === game);
-	const isOther = $derived(picked !== null && picked !== game);
+
+	let panel = $state<HTMLAnchorElement | null>(null);
+	let img = $state<HTMLImageElement | null>(null);
+	let fade = $state<HTMLDivElement | null>(null);
+	let pinned = $state(false);
+
+	function place(el: HTMLElement, rect: Rect) {
+		el.style.left = `${rect.left}px`;
+		el.style.top = `${rect.top}px`;
+		el.style.width = `${rect.width}px`;
+		el.style.height = `${rect.height}px`;
+	}
+
+	/* Pins the image at the exact pixels cover-fit gives it in its virtual box, so opening the
+	   half continues the picture instead of rescaling it. Until this runs the stylesheet's box
+	   plus object-fit shows the same crop, which is also what a visitor without JS gets. */
+	function pin() {
+		if (!panel || !img || !fade || !img.naturalWidth) return;
+		const stacked = !matchMedia('(min-width: 768px)').matches;
+		const pinSide = sideOf(game, stacked);
+		// Fractional size: clientWidth/Height round, and the box is a percentage of the real one.
+		const { width, height } = panel.getBoundingClientRect();
+		const rect = pinRect(
+			pinSide,
+			{ width, height },
+			{ width: img.naturalWidth, height: img.naturalHeight }
+		);
+		place(img, rect);
+		// The fade sits just inside the image's far edge; there is none if the image reaches it.
+		const band = fadeRect(
+			pinSide,
+			{ width, height },
+			rect,
+			stacked ? FADE_DEPTH_STACKED : FADE_DEPTH_WIDE
+		);
+		fade.style.display = band ? '' : 'none';
+		if (band) place(fade, band);
+		pinned = true;
+	}
+
+	$effect(() => {
+		const image = img;
+		if (!image) return;
+		let frame = 0;
+		const onResize = () => {
+			cancelAnimationFrame(frame);
+			frame = requestAnimationFrame(pin);
+		};
+		if (image.complete) pin();
+		else image.addEventListener('load', pin, { once: true });
+		addEventListener('resize', onResize);
+		return () => {
+			cancelAnimationFrame(frame);
+			image.removeEventListener('load', pin);
+			removeEventListener('resize', onResize);
+		};
+	});
+
+	/* The sweep opens the half from wherever the hover transition left it; the push-in runs on
+	   through the page reveal. Both are cancelled if the pick is handed back, which is what
+	   returns the half to rest after a failed navigation. */
+	$effect(() => {
+		if (!isPicked || !panel || !img) return;
+		if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+		const running = [
+			panel.animate([{ clipPath: getComputedStyle(panel).clipPath }, { clipPath: FULL_POLYGON }], {
+				duration: SWEEP_MS,
+				easing: SWEEP_EASE,
+				fill: 'forwards'
+			}),
+			img.animate([{ transform: 'scale(1)' }, { transform: `scale(${PUSH_IN})` }], {
+				duration: SWEEP_MS + REVEAL_MS,
+				easing: SWEEP_EASE,
+				fill: 'forwards'
+			})
+		];
+		return () => running.forEach((a) => a.cancel());
+	});
 </script>
 
 <!-- A real link: works without JS, is focusable, and hover preloads the game page. -->
 <a
+	bind:this={panel}
 	{href}
 	class={[
 		'panel absolute inset-0 block outline-none',
@@ -43,7 +134,7 @@
 	data-hot={hot ? '' : undefined}
 	data-dimmed={dimmed ? '' : undefined}
 	data-picked={isPicked ? '' : undefined}
-	data-other={isOther ? '' : undefined}
+	data-pinned={pinned ? '' : undefined}
 	aria-label="{GAME_NAME[game]} tools, {count} listed"
 	onpointerenter={() => onhover(game)}
 	onpointerleave={() => onhover(null)}
@@ -60,6 +151,7 @@
 	<picture class="art pointer-events-none absolute">
 		<source type="image/webp" srcset={ART[game].webp} />
 		<img
+			bind:this={img}
 			src={ART[game].jpg}
 			alt=""
 			class="size-full object-cover"
@@ -70,6 +162,7 @@
 		/>
 	</picture>
 	<div class="shade pointer-events-none absolute inset-0" aria-hidden="true"></div>
+	<div bind:this={fade} class="fade pointer-events-none absolute" aria-hidden="true"></div>
 	<div
 		class="label absolute bottom-9 flex max-w-[440px] flex-col gap-1.5 md:bottom-16 md:gap-2 {side ===
 		'left'
@@ -113,8 +206,11 @@
 	@reference '../../routes/layout.css';
 
 	/* Mobile first: the halves stack, seam from 52% on the left edge to 48% on the right.
-	   Every polygon keeps four points in the same order so clip-path can animate between them. */
+	   Every polygon keeps four points in the same order so clip-path can animate between them.
+	   The background is the dark canvas literal, as the shade is: past the image the opened half
+	   reads as canvas, not as the other half showing through. */
 	.panel {
+		background: #141619;
 		transition: clip-path 200ms cubic-bezier(0.4, 0, 0.2, 1);
 	}
 	.panel-left {
@@ -122,6 +218,13 @@
 	}
 	.panel-right {
 		clip-path: polygon(0 52%, 100% 48%, 100% 100%, 0 100%);
+	}
+
+	/* The hovered half sits above the other so its sweep covers rather than crosses it. A touch
+	   pick never hovers, so the pick raises the half too. */
+	.panel[data-hot],
+	.panel[data-picked] {
+		z-index: 1;
 	}
 
 	/* The image box covers only this half, so object-fit shows the intended crop. */
@@ -138,37 +241,34 @@
 		height: 52%;
 	}
 
-	/* A picked half opens to the full box as --exit runs 0 to 1; the maths keeps four points in order. */
-	.panel[data-picked] {
-		transition: none;
+	/* Once JS has pinned the image (explicit px on the img), the box covers the whole half so
+	   the picture continues at the same scale as the half opens. */
+	.panel[data-pinned] .art {
+		inset: 0;
+		width: auto;
+		height: auto;
 	}
-	.panel-left[data-picked] {
-		clip-path: polygon(
-			0 0,
-			100% 0,
-			100% calc(48% + 52% * var(--exit, 0)),
-			0 calc(52% + 48% * var(--exit, 0))
-		);
+	.panel[data-pinned] img {
+		position: absolute;
 	}
-	.panel-right[data-picked] {
-		clip-path: polygon(
-			0 calc(52% * (1 - var(--exit, 0))),
-			100% calc(48% * (1 - var(--exit, 0))),
-			100% 100%,
-			0 100%
-		);
+
+	/* Where the image stops short of the far edge it must end in canvas rather than a hard line.
+	   pin() lays this band over that edge; it is invisible at rest and on hover and fades in over
+	   the sweep. Opacity stays on the compositor, where a mask would re-rasterise every frame.
+	   The canvas literal, as .panel's background is. */
+	.fade {
+		opacity: 0;
+		transition: opacity 420ms cubic-bezier(0.33, 1, 0.68, 1);
+		will-change: opacity;
 	}
-	.panel-left[data-picked] :is(.art, .shade) {
-		top: 0;
-		height: calc(52% + 48% * var(--exit, 0));
+	.panel-left .fade {
+		background: linear-gradient(to bottom, transparent, #141619);
 	}
-	.panel-right[data-picked] :is(.art, .shade) {
-		top: calc(48% * (1 - var(--exit, 0)));
-		height: calc(52% + 48% * var(--exit, 0));
+	.panel-right .fade {
+		background: linear-gradient(to top, transparent, #141619);
 	}
-	.panel[data-other],
-	.panel[data-picked] .label {
-		opacity: calc(1 - min(1, var(--exit, 0) * 2));
+	.panel[data-picked] .fade {
+		opacity: 1;
 	}
 
 	/* Dark in both themes: the values are the dark canvas token, not a theme variable. */
@@ -209,8 +309,15 @@
 		bottom: calc(48% + 1.5rem);
 	}
 
+	/* The push-in scales from the point of interest of each crop; will-change keeps the image
+	   on its own layer so the scale never repaints it. */
 	img {
+		will-change: transform;
+		transform-origin: 50% 35%;
 		transition: filter 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	.panel-right img {
+		transform-origin: 50% 65%;
 	}
 
 	@media (hover: hover) {
@@ -273,33 +380,18 @@
 			left: 38%;
 			width: 62%;
 		}
-		.panel-left[data-picked] {
-			clip-path: polygon(
-				0 0,
-				calc(var(--seam-top) + (100% - var(--seam-top)) * var(--exit, 0)) 0,
-				calc(var(--seam-bottom) + (100% - var(--seam-bottom)) * var(--exit, 0)) 100%,
-				0 100%
-			);
+		/* Side by side, the far edge is the inner one: the fade runs towards the seam. */
+		.panel-left .fade {
+			background: linear-gradient(to right, transparent, #141619);
 		}
-		.panel-right[data-picked] {
-			clip-path: polygon(
-				calc(var(--seam-top) * (1 - var(--exit, 0))) 0,
-				100% 0,
-				100% 100%,
-				calc(var(--seam-bottom) * (1 - var(--exit, 0))) 100%
-			);
+		.panel-right .fade {
+			background: linear-gradient(to left, transparent, #141619);
 		}
-		.panel-left[data-picked] :is(.art, .shade) {
-			top: 0;
-			left: 0;
-			width: calc(62% + 38% * var(--exit, 0));
-			height: 100%;
+		img {
+			transform-origin: 20% 55%;
 		}
-		.panel-right[data-picked] :is(.art, .shade) {
-			top: 0;
-			left: calc(38% * (1 - var(--exit, 0)));
-			width: calc(62% + 38% * var(--exit, 0));
-			height: 100%;
+		.panel-right img {
+			transform-origin: 80% 55%;
 		}
 	}
 </style>
