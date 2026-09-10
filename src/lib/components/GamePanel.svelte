@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import poe1Jpg from '$lib/assets/chooser/poe1.jpg';
-	import poe1Webp from '$lib/assets/chooser/poe1.webp';
-	import poe2Jpg from '$lib/assets/chooser/poe2.jpg';
-	import poe2Webp from '$lib/assets/chooser/poe2.webp';
+	import { ART } from '$lib/art';
 	import { GAME_NAME } from '$lib/catalog/display';
 	import type { Game } from '$lib/catalog/schema';
 	import {
@@ -39,11 +36,6 @@
 	}
 
 	let { game, count, hovered, picked, onhover, onpick }: Props = $props();
-
-	const ART = {
-		poe1: { jpg: poe1Jpg, webp: poe1Webp },
-		poe2: { jpg: poe2Jpg, webp: poe2Webp }
-	} as const;
 
 	const side = $derived(game === 'poe1' ? 'left' : 'right');
 	const href = $derived(resolve('/[game=game]', { game }));

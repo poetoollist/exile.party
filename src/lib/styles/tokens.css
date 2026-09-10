@@ -23,6 +23,10 @@
 	--accent-tint: #e9ecfb;
 	--accent-line: rgb(10 33 192 / 0.28);
 
+	/* Decorative art over the canvas: in light it prints like ink, in dark only its lit parts emerge. */
+	--art-blend: multiply;
+	--art-opacity: 0.3;
+
 	/* The mark's own colours. Constants, so the dark blocks below leave them alone: a dark tile on
 	   the light canvas, a floating glyph on the dark one. favicon.svg carries the same three values
 	   by hand, since it cannot read these. */
@@ -56,6 +60,10 @@
 		--accent-on-fill: #ffffff;
 		--accent-tint: #050a44;
 		--accent-line: rgb(123 143 240 / 0.35);
+
+		/* Decorative art over the canvas: in light it prints like ink, in dark only its lit parts emerge. */
+		--art-blend: screen;
+		--art-opacity: 0.6;
 	}
 }
 
@@ -82,6 +90,10 @@
 	--accent-on-fill: #ffffff;
 	--accent-tint: #050a44;
 	--accent-line: rgb(123 143 240 / 0.35);
+
+	/* Decorative art over the canvas: in light it prints like ink, in dark only its lit parts emerge. */
+	--art-blend: screen;
+	--art-opacity: 0.6;
 }
 
 /* `inline` keeps the utilities pointing at the vars above so a theme swap is a

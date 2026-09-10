@@ -4,6 +4,7 @@
 	import { resolve } from '$app/paths';
 	import CategoryRail, { type RailItem } from '$lib/components/CategoryRail.svelte';
 	import FiltersPanel from '$lib/components/FiltersPanel.svelte';
+	import ListingArt from '$lib/components/ListingArt.svelte';
 	import SearchPalette from '$lib/components/SearchPalette.svelte';
 	import SiteFooter from '$lib/components/SiteFooter.svelte';
 	import ToolCard from '$lib/components/ToolCard.svelte';
@@ -96,32 +97,33 @@
 
 <SearchPalette tools={pool} categories={catalog.categories} scope={filters.game} />
 
-<main class="mx-auto w-full max-w-[1180px] flex-1 px-4 pt-8 pb-16 sm:px-6 sm:pt-10">
-	<div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-		<h1 class="text-[22px] leading-tight font-medium tracking-tight text-ink">
-			{filters.game ? `${GAME_NAME[filters.game]} tools` : 'All tools'}
-		</h1>
-		<div class="flex items-center gap-3">
-			<p class="text-[12.5px] text-faint tabular-nums">
-				{visible.length}
-				{#if visible.length !== pool.length}
-					<span class="text-faint/70">of {pool.length}</span>
-				{/if}
-				{pool.length === 1 && visible.length === pool.length ? 'tool' : 'tools'}
-			</p>
-			<FiltersPanel
-				bind:filters
-				{platforms}
-				shown={visible.length}
-				total={pool.length}
-				{countFor}
-			/>
+<main class="mx-auto w-full max-w-[1180px] flex-1 px-4 pb-16 sm:px-6">
+	<div class="relative pt-8 pb-6 sm:pt-10 lg:pb-8">
+		{#if lock}<ListingArt game={lock} />{/if}
+		<div class="relative flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+			<h1 class="text-[22px] leading-tight font-medium tracking-tight text-ink">
+				{filters.game ? `${GAME_NAME[filters.game]} tools` : 'All tools'}
+			</h1>
+			<div class="flex items-center gap-3">
+				<p class="text-[12.5px] text-faint tabular-nums">
+					{visible.length}
+					{#if visible.length !== pool.length}
+						<span class="text-faint/70">of {pool.length}</span>
+					{/if}
+					{pool.length === 1 && visible.length === pool.length ? 'tool' : 'tools'}
+				</p>
+				<FiltersPanel
+					bind:filters
+					{platforms}
+					shown={visible.length}
+					total={pool.length}
+					{countFor}
+				/>
+			</div>
 		</div>
 	</div>
 
-	<div
-		class="mt-6 grid grid-cols-[minmax(0,1fr)] gap-x-10 gap-y-6 lg:mt-8 lg:grid-cols-[232px_minmax(0,1fr)]"
-	>
+	<div class="grid grid-cols-[minmax(0,1fr)] gap-x-10 gap-y-6 lg:grid-cols-[232px_minmax(0,1fr)]">
 		<div class="min-w-0 lg:sticky lg:top-20 lg:self-start">
 			<CategoryRail items={rail} />
 		</div>
