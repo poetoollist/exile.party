@@ -12,6 +12,8 @@ import {
 	edgePolygon,
 	fadeRect,
 	pinRect,
+	pushOrigin,
+	pushReach,
 	seamExitPolygon,
 	sideOf,
 	type Side
@@ -241,68 +243,131 @@ describe('pinRect', () => {
 	});
 });
 
+describe('pushOrigin', () => {
+	it('left: 20% in, just below centre', () => {
+		expect(pushOrigin('left')).toEqual({ x: 0.2, y: 0.55 });
+	});
+
+	it('right: mirrors left, 80% in', () => {
+		expect(pushOrigin('right')).toEqual({ x: 0.8, y: 0.55 });
+	});
+
+	it('top: centred, 35% down', () => {
+		expect(pushOrigin('top')).toEqual({ x: 0.5, y: 0.35 });
+	});
+
+	it('bottom: mirrors top, 65% down', () => {
+		expect(pushOrigin('bottom')).toEqual({ x: 0.5, y: 0.65 });
+	});
+});
+
+describe('pushReach', () => {
+	it('left: the growth over the 80% of the width between the origin and the right edge', () => {
+		expect(pushReach('left', { width: 1000, height: 500 })).toBeCloseTo(48);
+	});
+
+	it('right: the growth over the 80% of the width between the origin and the left edge', () => {
+		expect(pushReach('right', { width: 1000, height: 500 })).toBeCloseTo(48);
+	});
+
+	it('top: the growth over the 65% of the height between the origin and the bottom edge', () => {
+		expect(pushReach('top', { width: 400, height: 1000 })).toBeCloseTo(39);
+	});
+
+	it('bottom: the growth over the 65% of the height between the origin and the top edge', () => {
+		expect(pushReach('bottom', { width: 400, height: 1000 })).toBeCloseTo(39);
+	});
+});
+
 describe('fadeRect', () => {
 	it('is deeper side by side than stacked', () => {
 		expect(FADE_DEPTH_WIDE).toBe(260);
 		expect(FADE_DEPTH_STACKED).toBe(160);
 	});
 
-	it('left: a band inside the image against its right edge, the far one', () => {
+	it('left: from depth inside the right edge, the far one, to reach past it, the panel tall', () => {
 		const panel = { width: 1600, height: 900 };
-		const image = { left: 0, top: 0, width: 1012.5, height: 900 };
-		expect(fadeRect('left', panel, image, FADE_DEPTH_WIDE)).toEqual({
+		const image = { left: 0, top: -50, width: 1012.5, height: 1000 };
+		expect(fadeRect('left', panel, image, FADE_DEPTH_WIDE, 40)).toEqual({
 			left: 1012.5 - 260,
 			top: 0,
-			width: 260,
+			width: 300,
 			height: 900
 		});
 	});
 
-	it('right: a band inside the image against its left edge, the far one', () => {
+	it('right: from depth inside the left edge, the far one, to reach past it, the panel tall', () => {
 		const panel = { width: 1600, height: 900 };
-		const image = { left: 598.775, top: 0, width: 1012.5, height: 900 };
-		expect(fadeRect('right', panel, image, FADE_DEPTH_WIDE)).toEqual({
-			left: 598.775,
+		const image = { left: 598.775, top: -50, width: 1012.5, height: 1000 };
+		expect(fadeRect('right', panel, image, FADE_DEPTH_WIDE, 40)).toEqual({
+			left: 558.775,
 			top: 0,
-			width: 260,
+			width: 300,
 			height: 900
 		});
 	});
 
-	it('top: a band inside the image against its bottom edge, the far one', () => {
+	it('top: from depth inside the bottom edge, the far one, to reach past it, the panel wide', () => {
 		const panel = { width: 400, height: 1000 };
-		const image = { left: 0, top: 0, width: 585, height: 520 };
-		expect(fadeRect('top', panel, image, FADE_DEPTH_STACKED)).toEqual({
+		const image = { left: -83.25, top: 0, width: 585, height: 520 };
+		expect(fadeRect('top', panel, image, FADE_DEPTH_STACKED, 20)).toEqual({
 			left: 0,
 			top: 520 - 160,
-			width: 585,
-			height: 160
+			width: 400,
+			height: 180
 		});
 	});
 
-	it('bottom: a band inside the image against its top edge, the far one', () => {
+	it('bottom: from depth inside the top edge, the far one, to reach past it, the panel wide', () => {
 		const panel = { width: 400, height: 1000 };
 		const image = { left: -83.25, top: 480, width: 585, height: 520 };
-		expect(fadeRect('bottom', panel, image, FADE_DEPTH_STACKED)).toEqual({
-			left: -83.25,
-			top: 480,
-			width: 585,
-			height: 160
+		expect(fadeRect('bottom', panel, image, FADE_DEPTH_STACKED, 20)).toEqual({
+			left: 0,
+			top: 460,
+			width: 400,
+			height: 180
 		});
+	});
+
+	it('reaches to where the push-in carries the far edge, so the grown image still ends in canvas', () => {
+		const wide = { width: 1600, height: 900 };
+		const stacked = { width: 400, height: 1000 };
+		const natural = { width: 1800, height: 1600 };
+		const grow = PUSH_IN - 1;
+
+		const left = pinRect('left', wide, natural);
+		const l = fadeRect('left', wide, left, FADE_DEPTH_WIDE, pushReach('left', left));
+		expect(l && l.left + l.width).toBeCloseTo(left.left + left.width + grow * 0.8 * left.width);
+
+		const right = pinRect('right', wide, natural);
+		const r = fadeRect('right', wide, right, FADE_DEPTH_WIDE, pushReach('right', right));
+		expect(r?.left).toBeCloseTo(right.left - grow * 0.8 * right.width);
+
+		const top = pinRect('top', stacked, natural);
+		const t = fadeRect('top', stacked, top, FADE_DEPTH_STACKED, pushReach('top', top));
+		expect(t && t.top + t.height).toBeCloseTo(top.top + top.height + grow * 0.65 * top.height);
+
+		const bottom = pinRect('bottom', stacked, natural);
+		const b = fadeRect('bottom', stacked, bottom, FADE_DEPTH_STACKED, pushReach('bottom', bottom));
+		expect(b?.top).toBeCloseTo(bottom.top - grow * 0.65 * bottom.height);
 	});
 
 	it('is null when the image already reaches the far edge, so there is nothing to hide', () => {
 		const panel = { width: 1600, height: 900 };
 		const full = { left: 0, top: 0, width: 1600, height: 900 };
-		for (const side of SIDES) expect(fadeRect(side, panel, full, 260)).toBeNull();
+		for (const side of SIDES) expect(fadeRect(side, panel, full, 260, 40)).toBeNull();
 		// Overflowing past the far edge counts as reaching it.
-		expect(fadeRect('left', panel, { left: 0, top: 0, width: 1700, height: 900 }, 260)).toBeNull();
 		expect(
-			fadeRect('right', panel, { left: -50, top: 0, width: 1700, height: 900 }, 260)
+			fadeRect('left', panel, { left: 0, top: 0, width: 1700, height: 900 }, 260, 40)
 		).toBeNull();
-		expect(fadeRect('top', panel, { left: 0, top: 0, width: 1600, height: 950 }, 160)).toBeNull();
 		expect(
-			fadeRect('bottom', panel, { left: 0, top: -50, width: 1600, height: 950 }, 160)
+			fadeRect('right', panel, { left: -50, top: 0, width: 1700, height: 900 }, 260, 40)
+		).toBeNull();
+		expect(
+			fadeRect('top', panel, { left: 0, top: 0, width: 1600, height: 950 }, 160, 20)
+		).toBeNull();
+		expect(
+			fadeRect('bottom', panel, { left: 0, top: -50, width: 1600, height: 950 }, 160, 20)
 		).toBeNull();
 	});
 });

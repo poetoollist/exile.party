@@ -149,6 +149,39 @@ export function pinRect(side: Side, panel: Size, natural: Size): Rect {
 	};
 }
 
+/** Where the push-in scales from, as fractions of the image: the point of interest of each crop,
+ *  near the outer edge so the growth runs towards the far one. pin() sets it inline, so the
+ *  transform and the fade agree on it. */
+export function pushOrigin(side: Side): Position {
+	switch (side) {
+		case 'left':
+			return { x: 0.2, y: 0.55 };
+		case 'right':
+			return { x: 0.8, y: 0.55 };
+		case 'top':
+			return { x: 0.5, y: 0.35 };
+		case 'bottom':
+			return { x: 0.5, y: 0.65 };
+	}
+}
+
+/** How far the push-in carries the image's far edge past where it rests: the growth times the
+ *  distance from the origin to that edge along the sweep axis. */
+export function pushReach(side: Side, image: Size): number {
+	const origin = pushOrigin(side);
+	const grow = PUSH_IN - 1;
+	switch (side) {
+		case 'left':
+			return grow * (1 - origin.x) * image.width;
+		case 'right':
+			return grow * origin.x * image.width;
+		case 'top':
+			return grow * (1 - origin.y) * image.height;
+		case 'bottom':
+			return grow * origin.y * image.height;
+	}
+}
+
 /* Where the pinned image stops short of the far edge it must end in canvas, not a hard line.
    A gradient overlay does that with an opacity transition, which stays on the compositor; a mask
    on the image would be re-rasterised every frame of the sweep. Deeper side by side, where the
@@ -156,31 +189,40 @@ export function pinRect(side: Side, panel: Size, natural: Size): Rect {
 export const FADE_DEPTH_WIDE = 260;
 export const FADE_DEPTH_STACKED = 160;
 
-/** The overlay in the panel's own coordinates: a band `depth` deep inside the image, against
- *  its far edge. Null when the image already reaches that edge and there is nothing to hide. */
-export function fadeRect(side: Side, panel: Size, image: Rect, depth: number): Rect | null {
+/** The overlay in the panel's own coordinates: a band from `depth` inside the image's far edge to
+ *  `reach` past it, spanning the panel on the cross axis. The push-in grows the image towards
+ *  that edge under a fade that does not move with it, so the band must already cover where the
+ *  edge ends up. Null when the image already reaches the panel's edge and there is nothing to
+ *  hide. */
+export function fadeRect(
+	side: Side,
+	panel: Size,
+	image: Rect,
+	depth: number,
+	reach: number
+): Rect | null {
 	switch (side) {
 		case 'left':
 			if (image.left + image.width >= panel.width) return null;
 			return {
 				left: image.left + image.width - depth,
-				top: image.top,
-				width: depth,
-				height: image.height
+				top: 0,
+				width: depth + reach,
+				height: panel.height
 			};
 		case 'right':
 			if (image.left <= 0) return null;
-			return { left: image.left, top: image.top, width: depth, height: image.height };
+			return { left: image.left - reach, top: 0, width: depth + reach, height: panel.height };
 		case 'top':
 			if (image.top + image.height >= panel.height) return null;
 			return {
-				left: image.left,
+				left: 0,
 				top: image.top + image.height - depth,
-				width: image.width,
-				height: depth
+				width: panel.width,
+				height: depth + reach
 			};
 		case 'bottom':
 			if (image.top <= 0) return null;
-			return { left: image.left, top: image.top, width: image.width, height: depth };
+			return { left: 0, top: image.top - reach, width: panel.width, height: depth + reach };
 	}
 }

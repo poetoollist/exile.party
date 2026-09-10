@@ -16,6 +16,8 @@
 		SWEEP_MS,
 		fadeRect,
 		pinRect,
+		pushOrigin,
+		pushReach,
 		sideOf,
 		type Rect
 	} from '$lib/chooser';
@@ -71,14 +73,17 @@
 			{ width: img.naturalWidth, height: img.naturalHeight }
 		);
 		place(img, rect);
-		// The fade sits just inside the image's far edge; there is none if the image reaches it.
-		const band = fadeRect(
-			pinSide,
-			{ width, height },
-			rect,
-			stacked ? FADE_DEPTH_STACKED : FADE_DEPTH_WIDE
-		);
+		// The push-in scales from the crop's point of interest; set here, with the pin, so the fade
+		// below can allow for how far it carries the far edge.
+		const origin = pushOrigin(pinSide);
+		img.style.transformOrigin = `${origin.x * 100}% ${origin.y * 100}%`;
+		// The fade sits over the image's far edge and reaches to where the push-in leaves it; there
+		// is none if the image reaches the panel's edge.
+		const depth = stacked ? FADE_DEPTH_STACKED : FADE_DEPTH_WIDE;
+		const reach = pushReach(pinSide, rect);
+		const band = fadeRect(pinSide, { width, height }, rect, depth, reach);
 		fade.style.display = band ? '' : 'none';
+		fade.style.setProperty('--depth', `${depth}px`);
 		if (band) place(fade, band);
 		pinned = true;
 	}
@@ -255,17 +260,19 @@
 	/* Where the image stops short of the far edge it must end in canvas rather than a hard line.
 	   pin() lays this band over that edge; it is invisible at rest and on hover and fades in over
 	   the sweep. Opacity stays on the compositor, where a mask would re-rasterise every frame.
-	   The canvas literal, as .panel's background is. */
+	   The band reaches past the image because the push-in grows the image towards the far edge
+	   under a fade that does not move with it; the gradient is solid from --depth on so that
+	   overreach is plain canvas. The canvas literal, as .panel's background is. */
 	.fade {
 		opacity: 0;
 		transition: opacity 420ms cubic-bezier(0.33, 1, 0.68, 1);
 		will-change: opacity;
 	}
 	.panel-left .fade {
-		background: linear-gradient(to bottom, transparent, #141619);
+		background: linear-gradient(to bottom, transparent, #141619 var(--depth));
 	}
 	.panel-right .fade {
-		background: linear-gradient(to top, transparent, #141619);
+		background: linear-gradient(to top, transparent, #141619 var(--depth));
 	}
 	.panel[data-picked] .fade {
 		opacity: 1;
@@ -309,15 +316,11 @@
 		bottom: calc(48% + 1.5rem);
 	}
 
-	/* The push-in scales from the point of interest of each crop; will-change keeps the image
-	   on its own layer so the scale never repaints it. */
+	/* The push-in's origin is pin()'s to set, where the fade can read it; will-change keeps the
+	   image on its own layer so the scale never repaints it. */
 	img {
 		will-change: transform;
-		transform-origin: 50% 35%;
 		transition: filter 200ms cubic-bezier(0.4, 0, 0.2, 1);
-	}
-	.panel-right img {
-		transform-origin: 50% 65%;
 	}
 
 	@media (hover: hover) {
@@ -382,16 +385,10 @@
 		}
 		/* Side by side, the far edge is the inner one: the fade runs towards the seam. */
 		.panel-left .fade {
-			background: linear-gradient(to right, transparent, #141619);
+			background: linear-gradient(to right, transparent, #141619 var(--depth));
 		}
 		.panel-right .fade {
-			background: linear-gradient(to left, transparent, #141619);
-		}
-		img {
-			transform-origin: 20% 55%;
-		}
-		.panel-right img {
-			transform-origin: 80% 55%;
+			background: linear-gradient(to left, transparent, #141619 var(--depth));
 		}
 	}
 </style>
