@@ -11,7 +11,7 @@ export function countByGame(tools: readonly Tool[]): Record<Game, number> {
 export const START_HERE: Category = {
 	id: START_HERE_ID,
 	name: 'Start here',
-	description: 'The tools a new player should install first.'
+	description: 'If you are a new player, these are the tools you need and can rely on.'
 };
 
 const rankOf = (t: Tool, sectionId: string) => t.rank?.[sectionId] ?? Number.MAX_SAFE_INTEGER;

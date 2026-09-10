@@ -97,7 +97,9 @@ describe('sections', () => {
 	});
 
 	it('describes Start here as the tools a new player should install first', () => {
-		expect(START_HERE.description).toBe('The tools a new player should install first.');
+		expect(START_HERE.description).toBe(
+			'If you are a new player, these are the tools you need and can rely on.'
+		);
 	});
 });
 
@@ -150,7 +152,9 @@ describe('groupBySection', () => {
 		const groups = groupBySection(secs, tools);
 		expect(groups.map((g) => g.id)).toEqual([START_HERE_ID, 'trade', 'crafting']);
 		expect(groups[0].tools.map((t) => t.id)).toEqual(['overlay']);
-		expect(groups[0].description).toBe('The tools a new player should install first.');
+		expect(groups[0].description).toBe(
+			'If you are a new player, these are the tools you need and can rely on.'
+		);
 		expect(groups[2].tools.map((t) => t.id)).toEqual(['bench', 'overlay']);
 	});
 
