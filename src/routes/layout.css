@@ -72,6 +72,50 @@
 		z-index: 9999;
 	}
 
+	/* The tool opening (src/lib/opening.ts), scoped to its own attribute so the theme reveal above
+	   keeps its rules. Every pseudo-element starts inert; opening-transition.ts animates exactly
+	   what the choreography needs. The icon and name pairs blend plus-lighter so the mid-flight
+	   handover between two renderings of the same glyphs does not dip. */
+	html[data-opening]::view-transition-group(*),
+	html[data-opening]::view-transition-image-pair(*),
+	html[data-opening]::view-transition-old(*),
+	html[data-opening]::view-transition-new(*) {
+		animation: none;
+	}
+
+	html[data-opening]::view-transition-old(*),
+	html[data-opening]::view-transition-new(*) {
+		mix-blend-mode: normal;
+	}
+
+	html[data-opening]::view-transition-group(*) {
+		transform-origin: 0 0;
+	}
+
+	html[data-opening]::view-transition-old(icon),
+	html[data-opening]::view-transition-new(icon),
+	html[data-opening]::view-transition-old(name),
+	html[data-opening]::view-transition-new(name) {
+		mix-blend-mode: plus-lighter;
+		transform-origin: 0 0;
+	}
+
+	/* Groups stack in old-state paint order with new-only elements appended, so on the way back
+	   the card would paint over the icon and name landing on it. Pin the order instead. */
+	html[data-opening]::view-transition-group(card) {
+		z-index: 1;
+	}
+
+	html[data-opening]::view-transition-group(icon),
+	html[data-opening]::view-transition-group(name) {
+		z-index: 2;
+	}
+
+	/* On the way back the old page is on top, retreating into the card. */
+	html[data-opening='close']::view-transition-old(root) {
+		z-index: 1;
+	}
+
 	/* Hover is a border or background shift, never motion. Honour the OS setting anyway. */
 	@media (prefers-reduced-motion: reduce) {
 		*,

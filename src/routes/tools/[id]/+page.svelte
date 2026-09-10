@@ -65,18 +65,23 @@
 						alt=""
 						width="40"
 						height="40"
+						data-opening="icon"
 						class="size-10 rounded-md border border-line bg-canvas object-cover"
 					/>
 				{:else}
 					<span
 						aria-hidden="true"
+						data-opening="icon"
 						class="grid size-10 place-items-center rounded-md border border-line text-[16px] font-medium text-muted"
 					>
 						{monogram(tool.name)}
 					</span>
 				{/if}
 				<div class="min-w-0">
-					<p class="truncate text-[15px] leading-tight font-medium tracking-tight text-ink">
+					<p
+						data-opening="name"
+						class="truncate text-[15px] leading-tight font-medium tracking-tight text-ink"
+					>
 						{tool.name}
 					</p>
 					{#if tool.editorsPick || tool.official || tool.newPlayer}

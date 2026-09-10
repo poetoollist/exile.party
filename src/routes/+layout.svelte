@@ -1,10 +1,11 @@
 <script lang="ts">
 	import './layout.css';
-	import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
+	import { afterNavigate, beforeNavigate, goto, onNavigate } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import favicon from '$lib/assets/favicon.svg';
 	import SubmitDialog from '$lib/components/SubmitDialog.svelte';
 	import { gameStore, readGame } from '$lib/game';
+	import { openingNavigate } from '$lib/opening-transition';
 
 	let { children, data } = $props();
 
@@ -29,6 +30,9 @@
 	afterNavigate(() => {
 		document.documentElement.style.removeProperty('scroll-behavior');
 	});
+
+	/* A directory card opens its tool page out of the card, and Back folds it in again. */
+	onNavigate(openingNavigate);
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
