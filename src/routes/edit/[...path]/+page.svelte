@@ -5,6 +5,7 @@
 	import { page } from '$app/state';
 	import { sections } from '$lib/catalog/home';
 	import { api, errorText } from '$lib/editor/api';
+	import CategoriesEditor from '$lib/editor/CategoriesEditor.svelte';
 	import EditorShell from '$lib/editor/EditorShell.svelte';
 	import { emptyTool, toDraft } from '$lib/editor/form';
 	import ToolForm from '$lib/editor/ToolForm.svelte';
@@ -105,6 +106,17 @@
 				No tool {segments[1]}. <a href={edit('')} class="text-accent">Back to tools</a>
 			</p>
 		{/if}
+	{:else if segments[0] === 'categories' && segments.length === 1}
+		{#key catalog}
+			<CategoriesEditor
+				categories={catalog.categories}
+				tools={catalog.tools}
+				onsaved={(file) => {
+					noteWritten(file);
+					void reload();
+				}}
+			/>
+		{/key}
 	{:else}
 		<p class="text-[13.5px] text-muted">
 			Nothing at /edit/{segments.join('/')}.
