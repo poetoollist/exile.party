@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { GAME_LABEL, PLATFORM_LABEL, PRICING_LABEL, STATUS_LABEL } from '$lib/catalog/display';
 	import { toolId } from '$lib/catalog/id';
 	import { messagesAt, zodIssues, type Issue } from '$lib/catalog/issues';
@@ -45,9 +46,9 @@
 	const KEBAB = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 	const MAX_VIDEOS = 4;
 
-	let draft = $state<ToolDraft>(structuredClone($state.snapshot(initial)));
+	let draft = $state<ToolDraft>(untrack(() => structuredClone($state.snapshot(initial))));
 	/* What the last save (or the load) wrote, for the dirty check. */
-	let baseline = $state(draftYaml(normalizeDraft(initial)));
+	let baseline = $state(untrack(() => draftYaml(normalizeDraft(initial))));
 	let customId = $state('');
 	let idTouched = $state(false);
 	let tagInput = $state('');
@@ -55,7 +56,7 @@
 	let serverError = $state<string | null>(null);
 	let busy = $state(false);
 
-	const creating = id === undefined;
+	const creating = untrack(() => id === undefined);
 	const effectiveId = $derived(id ?? (idTouched ? customId : toolId(draft.name)));
 	const normalized = $derived(normalizeDraft(draft));
 	const parsed = $derived(ToolMetadata.safeParse(normalized));

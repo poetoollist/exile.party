@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { messagesAt, zodIssues, type Issue } from '$lib/catalog/issues';
 	import { CategoryFile, type Category, type Tool } from '$lib/catalog/schema';
 	import { categoriesYaml } from '$lib/catalog/yaml';
-	import { SvelteSet } from 'svelte/reactivity';
 	import { api, EditorApiError, errorText } from './api';
 	import Field from './Field.svelte';
 	import { BUTTON, INPUT, PRIMARY, SMALL } from './styles';
@@ -21,9 +21,9 @@
 	type Row = Category & { locked: boolean };
 
 	let rows = $state<Row[]>(
-		structuredClone($state.snapshot(categories)).map((c) => ({ ...c, locked: true }))
+		untrack(() => structuredClone($state.snapshot(categories)).map((c) => ({ ...c, locked: true })))
 	);
-	let baseline = $state(categoriesYaml(categories));
+	let baseline = $state(untrack(() => categoriesYaml(categories)));
 	let serverIssues = $state<Issue[]>([]);
 	let serverError = $state<string | null>(null);
 	let busy = $state(false);
@@ -38,12 +38,10 @@
 	const parsed = $derived(CategoryFile.safeParse({ categories: cleaned }));
 	const issues = $derived.by(() => {
 		const list = parsed.success ? [] : zodIssues(parsed.error);
-		const seen = new SvelteSet<string>();
 		cleaned.forEach((category, i) => {
-			if (seen.has(category.id)) {
+			if (cleaned.findIndex((c) => c.id === category.id) !== i) {
 				list.push({ path: `categories.${i}.id`, message: `${category.id} is used twice` });
 			}
-			seen.add(category.id);
 		});
 		return list;
 	});

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { sectionOrder } from '$lib/catalog/ranking';
 	import type { Category, Tool } from '$lib/catalog/schema';
 	import { api, EditorApiError, errorText } from './api';
@@ -14,9 +15,9 @@
 
 	let { section, tools, onsaved }: Props = $props();
 
-	const order = sectionOrder(tools, section.id);
-	const byId = new Map(tools.map((t) => [t.id, t]));
-	const memberIds = [...order.ranked, ...order.unranked].map((t) => t.id);
+	const order = untrack(() => sectionOrder(tools, section.id));
+	const byId = untrack(() => new Map(tools.map((t) => [t.id, t])));
+	const memberIds = untrack(() => [...order.ranked, ...order.unranked].map((t) => t.id));
 
 	let ranked = $state(order.ranked.map((t) => t.id));
 	let baseline = $state(order.ranked.map((t) => t.id).join(','));
