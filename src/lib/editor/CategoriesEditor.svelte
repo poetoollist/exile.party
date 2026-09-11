@@ -16,14 +16,17 @@
 
 	let { categories, tools, onsaved }: Props = $props();
 
-	let rows = $state<Category[]>(structuredClone($state.snapshot(categories)));
+	/* Ids of loaded categories are locked because they are URLs and section keys in about.yaml;
+	   rows added here stay editable. */
+	type Row = Category & { locked: boolean };
+
+	let rows = $state<Row[]>(
+		structuredClone($state.snapshot(categories)).map((c) => ({ ...c, locked: true }))
+	);
 	let baseline = $state(categoriesYaml(categories));
 	let serverIssues = $state<Issue[]>([]);
 	let serverError = $state<string | null>(null);
 	let busy = $state(false);
-
-	/* Ids are URLs and section keys in about.yaml; only a row added here can still change its id. */
-	const existingIds = new Set(categories.map((c) => c.id));
 
 	const cleaned = $derived(
 		rows.map((row) => ({
@@ -61,7 +64,7 @@
 	}
 
 	function add() {
-		rows = [...rows, { id: '', name: '', description: '' }];
+		rows = [...rows, { id: '', name: '', description: '', locked: false }];
 	}
 
 	function remove(i: number) {
@@ -115,7 +118,7 @@
 
 		<ol class="flex flex-col gap-3">
 			{#each rows as row, i (i)}
-				{@const locked = existingIds.has(row.id)}
+				{@const locked = row.locked}
 				{@const uses = usedBy(row.id)}
 				<li
 					class="grid gap-2 rounded-md border border-line bg-surface p-3 sm:grid-cols-[10rem_1fr]"
