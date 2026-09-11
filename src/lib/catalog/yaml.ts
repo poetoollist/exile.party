@@ -47,6 +47,9 @@ const TOOL_FLAGS: ReadonlySet<string> = new Set([
 const VIDEO_FLAGS: ReadonlySet<string> = new Set(['byCreator']);
 const NO_FLAGS: ReadonlySet<string> = new Set();
 
+/** Prettier's singleQuote applies to YAML, and CI runs prettier --check over tools/, so quote like it. */
+const STRINGIFY = { singleQuote: true } as const;
+
 function isDefault(key: string, value: unknown, flags: ReadonlySet<string>): boolean {
 	if (value === undefined) return true;
 	if (Array.isArray(value)) return value.length === 0;
@@ -74,13 +77,14 @@ export function toolYaml(tool: ToolMetadata): string {
 	if (tool.videos.length > 0) {
 		out.videos = tool.videos.map((video) => pick(video, VIDEO_KEYS, VIDEO_FLAGS));
 	}
-	return stringify(out);
+	return stringify(out, STRINGIFY);
 }
 
 /** The categories.yaml text. Leading `#` comment lines of `existingText` are kept above the list. */
 export function categoriesYaml(categories: readonly Category[], existingText = ''): string {
 	const header = existingText.match(/^(?:#.*\n)+/)?.[0] ?? '';
 	return (
-		header + stringify({ categories: categories.map((c) => pick(c, CATEGORY_KEYS, NO_FLAGS)) })
+		header +
+		stringify({ categories: categories.map((c) => pick(c, CATEGORY_KEYS, NO_FLAGS)) }, STRINGIFY)
 	);
 }

@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import * as prettier from 'prettier';
 import { CATEGORIES_FILE, parseCategories, parseTool, TOOLS_DIRECTORY } from '../server/catalog';
 import type { ToolMetadata } from './schema';
 import { categoriesYaml, toolYaml } from './yaml';
@@ -133,5 +134,50 @@ describe('categoriesYaml', () => {
 		expect(categoriesYaml([{ id: 'trade', name: 'Trade' }])).toBe(
 			'categories:\n  - id: trade\n    name: Trade\n'
 		);
+	});
+});
+
+describe('prettier agrees with the serializer', () => {
+	/* CI runs `prettier --check .`, which covers tools/**\/*.yaml, so the canonical form has to be
+	   the form prettier leaves alone: single quotes unless the string holds an apostrophe. */
+	const check = async (text: string, file: string) =>
+		prettier.check(text, { ...(await prettier.resolveConfig(file)), filepath: file });
+
+	it.each(ids)('accepts what toolYaml writes for tools/%s', async (id) => {
+		const file = resolve(TOOLS_DIRECTORY, id, 'about.yaml');
+		const tool = parseTool(lf(readFileSync(file, 'utf8')), id);
+		expect(await check(toolYaml(tool), file)).toBe(true);
+	});
+
+	it('accepts what categoriesYaml writes', async () => {
+		const text = lf(readFileSync(CATEGORIES_FILE, 'utf8'));
+		expect(await check(categoriesYaml(parseCategories(text), text), CATEGORIES_FILE)).toBe(true);
+	});
+
+	it('quotes a video title the way prettier does', () => {
+		const tool = (title: string): ToolMetadata => ({
+			name: 'T',
+			description: 'Description of the tool.',
+			url: 'https://t.example',
+			games: ['poe1'],
+			category: 'trade',
+			alsoIn: [],
+			tags: [],
+			platforms: ['web'],
+			pricing: 'free',
+			openSource: false,
+			official: false,
+			byMaintainer: false,
+			editorsPick: false,
+			newPlayer: false,
+			status: 'active',
+			lastVerified: '2026-09-10',
+			screenshots: [],
+			videos: [{ youtube: 'abcdefghijk', title, channel: 'C', byCreator: false }]
+		});
+		expect(toolYaml(tool('[3.28] Exile UI: Campaign Features Showcase'))).toContain(
+			"    title: '[3.28] Exile UI: Campaign Features Showcase'\n"
+		);
+		expect(toolYaml(tool("Don't: test"))).toContain('    title: "Don\'t: test"\n');
 	});
 });
