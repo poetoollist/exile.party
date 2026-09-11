@@ -12,9 +12,21 @@
 	import { BUTTON } from '$lib/editor/styles';
 	import type { EditorCatalog } from '$lib/editor/types';
 
+	/* Survives the dev server's full reload after a save, which otherwise wipes the in-memory list. */
+	const WRITTEN_KEY = 'exile-party-editor-written';
+
+	function loadWritten(): string[] {
+		try {
+			const parsed: unknown = JSON.parse(sessionStorage.getItem(WRITTEN_KEY) ?? '[]');
+			return Array.isArray(parsed) ? parsed.filter((f): f is string => typeof f === 'string') : [];
+		} catch {
+			return [];
+		}
+	}
+
 	let catalog = $state<EditorCatalog | null>(null);
 	let error = $state<string | null>(null);
-	let written = $state<string[]>([]);
+	let written = $state<string[]>(loadWritten());
 
 	async function reload() {
 		try {
@@ -31,6 +43,11 @@
 
 	function noteWritten(...files: string[]) {
 		for (const file of files) if (!written.includes(file)) written = [...written, file];
+		try {
+			sessionStorage.setItem(WRITTEN_KEY, JSON.stringify(written));
+		} catch {
+			/* private mode or storage blocked: the in-memory list still works for this page view */
+		}
 	}
 
 	const segments = $derived((page.params.path ?? '').split('/').filter(Boolean));

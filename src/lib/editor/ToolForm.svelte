@@ -60,13 +60,19 @@
 	const normalized = $derived(normalizeDraft(draft));
 	const parsed = $derived(ToolMetadata.safeParse(normalized));
 	const issues = $derived(parsed.success ? [] : zodIssues(parsed.error));
+	/* Client and server issues both show under their fields; see topServerIssues for the banner. */
+	const allIssues = $derived([...issues, ...serverIssues]);
 	const yaml = $derived(draftYaml(normalized));
 	const dirty = $derived(creating || yaml !== baseline);
 	const idIssues = $derived(
 		creating && !KEBAB.test(effectiveId) ? ['kebab-case id, for example my-tool'] : []
 	);
 	const canSave = $derived(parsed.success && dirty && idIssues.length === 0 && !busy);
-	const at = (path: string) => messagesAt(issues, path);
+	const at = (path: string) => messagesAt(allIssues, path);
+	/* Server issues with no field on this form: the whole-tool path, the id, or another tool's path. */
+	const topServerIssues = $derived(
+		serverIssues.filter((issue) => !(issue.path.split('.')[0] in draft))
+	);
 	const file = $derived(`tools/${effectiveId || '<id>'}/about.yaml`);
 	const previewTool = $derived({ id: effectiveId || 'new-tool', ...normalized } as unknown as Tool);
 	const rankSections = $derived(sectionsOf(normalized));
@@ -186,12 +192,12 @@
 			{/if}
 		</div>
 
-		{#if serverError || serverIssues.length > 0}
+		{#if serverError || topServerIssues.length > 0}
 			<div class="rounded-md border border-line bg-surface p-3 text-[12.5px]">
 				{#if serverError}
 					<p class="text-danger">{serverError}</p>
 				{/if}
-				{#each serverIssues as issue, i (i)}
+				{#each topServerIssues as issue, i (i)}
 					<p class="text-danger">
 						<code class="font-mono text-[12px]">{issue.path || 'tool'}</code>
 						{issue.message}
@@ -376,7 +382,7 @@
 					label="Tags"
 					id="tag"
 					hint="Enter or comma adds. Never repeat what another field says."
-					issues={issues.filter((i) => i.path.startsWith('tags')).map((i) => i.message)}
+					issues={allIssues.filter((i) => i.path.startsWith('tags')).map((i) => i.message)}
 				>
 					<div
 						class="flex min-h-9 flex-wrap items-center gap-1.5 rounded-md border border-line bg-surface px-2 py-1"
@@ -469,7 +475,7 @@
 					<Field
 						label="Rank"
 						hint="Position inside a section; blank means unranked, A to Z after the ranked ones."
-						issues={issues.filter((i) => i.path.startsWith('rank')).map((i) => i.message)}
+						issues={allIssues.filter((i) => i.path.startsWith('rank')).map((i) => i.message)}
 					>
 						<div class="flex flex-wrap gap-3">
 							{#each rankSections as section (section)}
@@ -507,7 +513,7 @@
 				label="Screenshots"
 				hint="Files in tools/{effectiveId ||
 					'<id>'}/shots. Listed ones show on the tool page in this order; bun run validate fails on an unlisted file."
-				issues={issues.filter((i) => i.path.startsWith('screenshots')).map((i) => i.message)}
+				issues={allIssues.filter((i) => i.path.startsWith('screenshots')).map((i) => i.message)}
 			>
 				{#if shots.length === 0}
 					<p class="py-1.5 text-[13px] text-faint">No files in shots/.</p>
@@ -561,7 +567,7 @@
 			<Field
 				label="Videos"
 				hint="Up to four tutorials about the tool. Paste a YouTube URL; only the id is kept."
-				issues={issues.filter((i) => i.path === 'videos').map((i) => i.message)}
+				issues={allIssues.filter((i) => i.path === 'videos').map((i) => i.message)}
 			>
 				<div class="flex flex-col gap-3">
 					{#each draft.videos as video, i (i)}
