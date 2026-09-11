@@ -4,17 +4,29 @@ import { defineConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
 import adapter from '@sveltejs/adapter-static';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { editorApi } from './src/lib/server/editor/plugin';
+
+/**
+ * The catalog editor at /edit only exists under `vite dev` (see src/lib/server/editor/plugin.ts),
+ * so the prerenderer never sees its route. Any other unseen route is still a failed build.
+ */
+const EDITOR_ROUTE = '/edit/[...path]';
+function handleUnseenRoutes({ routes, message }: { routes: string[]; message: string }) {
+	if (routes.some((route) => route !== EDITOR_ROUTE)) throw new Error(message);
+}
 
 export default defineConfig({
 	plugins: [
 		tailwindcss(),
+		editorApi(),
 		sveltekit({
 			compilerOptions: {
 				// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
-			adapter: adapter({ pages: 'build', assets: 'build', strict: true })
+			adapter: adapter({ pages: 'build', assets: 'build', strict: true }),
+			prerender: { handleUnseenRoutes }
 		})
 	],
 	server: {
