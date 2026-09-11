@@ -45,6 +45,10 @@ The catalogue lives in [`tools/`](tools). Adding a tool is one pull request with
    lastVerified: 2026-09-05
    ```
 
+   Maintainers with a local checkout can instead run `bun run dev` and open
+   [`/edit`](http://localhost:5173/edit): a form for every listing, category and section ranking
+   that writes the YAML for you to review and commit.
+
 3. Optionally add `tools/your-tool/icon.png` (also `.svg` or `.webp`). Put screenshots in
    `tools/your-tool/shots/` and list their filenames under `screenshots:` in display order.
 4. Run `bun run validate`. It checks every entry and asset, and prints the offending path if
@@ -96,6 +100,7 @@ bun run dev
 | Command             | Does                                                       |
 | ------------------- | ---------------------------------------------------------- |
 | `bun run dev`       | dev server                                                   |
+| `/edit` under `bun run dev` | local catalog editor; writes `tools/` YAML, never part of the build |
 | `bun run new-tool`  | interactively scaffolds `tools/<id>/about.yaml`              |
 | `bun run build`     | generates OG images, then builds the static site to `build`   |
 | `bun run preview`   | serves the built site                                        |
