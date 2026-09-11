@@ -8,6 +8,7 @@
 	import CategoriesEditor from '$lib/editor/CategoriesEditor.svelte';
 	import EditorShell from '$lib/editor/EditorShell.svelte';
 	import { emptyTool, toDraft } from '$lib/editor/form';
+	import SectionRanking from '$lib/editor/SectionRanking.svelte';
 	import ToolForm from '$lib/editor/ToolForm.svelte';
 	import ToolList from '$lib/editor/ToolList.svelte';
 	import { BUTTON } from '$lib/editor/styles';
@@ -117,6 +118,26 @@
 				}}
 			/>
 		{/key}
+	{:else if segments[0] === 'sections' && segments.length === 2}
+		{@const section = sections(catalog.categories).find((s) => s.id === segments[1])}
+		{#if section}
+			{#key section.id}
+				{#key catalog}
+					<SectionRanking
+						{section}
+						tools={catalog.tools}
+						onsaved={(changed) => {
+							noteWritten(...changed.map((id) => `tools/${id}/about.yaml`));
+							void reload();
+						}}
+					/>
+				{/key}
+			{/key}
+		{:else}
+			<p class="text-[13.5px] text-muted">
+				No section {segments[1]}. <a href={edit('')} class="text-accent">Back to tools</a>
+			</p>
+		{/if}
 	{:else}
 		<p class="text-[13.5px] text-muted">
 			Nothing at /edit/{segments.join('/')}.
