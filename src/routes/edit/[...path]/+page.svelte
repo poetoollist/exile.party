@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { sections } from '$lib/catalog/home';
@@ -29,6 +29,7 @@
 	let catalog = $state<EditorCatalog | null>(null);
 	let error = $state<string | null>(null);
 	let written = $state<string[]>(loadWritten());
+	let unsaved = $state(false);
 
 	async function reload() {
 		try {
@@ -41,6 +42,15 @@
 
 	onMount(() => {
 		void reload();
+		const onBeforeUnload = (event: BeforeUnloadEvent) => {
+			if (unsaved) event.preventDefault();
+		};
+		window.addEventListener('beforeunload', onBeforeUnload);
+		return () => window.removeEventListener('beforeunload', onBeforeUnload);
+	});
+
+	beforeNavigate((navigation) => {
+		if (unsaved && !confirm('Discard unsaved changes?')) navigation.cancel();
 	});
 
 	function noteWritten(...files: string[]) {
@@ -54,6 +64,11 @@
 
 	const segments = $derived((page.params.path ?? '').split('/').filter(Boolean));
 	const edit = (path: string) => resolve('/edit/[...path]', { path });
+
+	$effect(() => {
+		void segments;
+		unsaved = false;
+	});
 
 	const knownTags = $derived(
 		catalog ? [...new Set(catalog.tools.flatMap((t) => t.tags))].sort() : []
@@ -81,6 +96,7 @@
 				noteWritten(file);
 				void reload().then(() => goto(edit(`tools/${id}`)));
 			}}
+			ondirty={(d) => (unsaved = d)}
 		/>
 	{:else if segments[0] === 'tools' && segments.length === 2}
 		{@const tool = catalog.tools.find((t) => t.id === segments[1])}
@@ -97,9 +113,11 @@
 						void reload();
 					}}
 					ondeleted={(id) => {
+						unsaved = false;
 						noteWritten(`tools/${id}/ (deleted)`);
 						void reload().then(() => goto(edit('')));
 					}}
+					ondirty={(d) => (unsaved = d)}
 				/>
 			{/key}
 		{:else}
@@ -116,6 +134,7 @@
 					noteWritten(file);
 					void reload();
 				}}
+				ondirty={(d) => (unsaved = d)}
 			/>
 		{/key}
 	{:else if segments[0] === 'sections' && segments.length === 2}
@@ -130,6 +149,7 @@
 							noteWritten(...changed.map((id) => `tools/${id}/about.yaml`));
 							void reload();
 						}}
+						ondirty={(d) => (unsaved = d)}
 					/>
 				{/key}
 			{/key}

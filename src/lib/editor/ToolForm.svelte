@@ -39,9 +39,10 @@
 		/** After a successful write: the tool id and the repo path written. */
 		onsaved: (id: string, file: string) => void;
 		ondeleted?: (id: string) => void;
+		ondirty?: (dirty: boolean) => void;
 	}
 
-	let { id, initial, categories, assets, knownTags, onsaved, ondeleted }: Props = $props();
+	let { id, initial, categories, assets, knownTags, onsaved, ondeleted, ondirty }: Props = $props();
 
 	const KEBAB = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 	const MAX_VIDEOS = 4;
@@ -64,7 +65,8 @@
 	/* Client and server issues both show under their fields; see topServerIssues for the banner. */
 	const allIssues = $derived([...issues, ...serverIssues]);
 	const yaml = $derived(draftYaml(normalized));
-	const dirty = $derived(creating || yaml !== baseline);
+	const unsaved = $derived(yaml !== baseline);
+	const dirty = $derived(creating || unsaved);
 	const idIssues = $derived(
 		creating && !KEBAB.test(effectiveId) ? ['kebab-case id, for example my-tool'] : []
 	);
@@ -81,6 +83,8 @@
 	/* Files on disk plus names listed but missing, so both mismatches are visible. */
 	const shots = $derived([...new Set([...draft.screenshots, ...assets.shots])]);
 	const alsoInOptions = $derived(categories.filter((c) => c.id !== draft.category));
+
+	$effect(() => ondirty?.(unsaved));
 
 	const sectionName = (sectionId: string) =>
 		sectionId === START_HERE_ID

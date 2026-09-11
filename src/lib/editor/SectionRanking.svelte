@@ -11,9 +11,10 @@
 		tools: Tool[];
 		/** After a successful write, with the ids whose about.yaml changed. */
 		onsaved: (changed: string[]) => void;
+		ondirty?: (dirty: boolean) => void;
 	}
 
-	let { section, tools, onsaved }: Props = $props();
+	let { section, tools, onsaved, ondirty }: Props = $props();
 
 	const order = untrack(() => sectionOrder(tools, section.id));
 	const byId = untrack(() => new Map(tools.map((t) => [t.id, t])));
@@ -32,6 +33,8 @@
 	);
 	const dirty = $derived(ranked.join(',') !== baseline);
 	const canSave = $derived(dirty && !busy);
+
+	$effect(() => ondirty?.(dirty));
 
 	function moved(from: number, to: number) {
 		if (to < 0 || to >= ranked.length) return;

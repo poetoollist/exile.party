@@ -12,9 +12,10 @@
 		tools: Tool[];
 		/** After a successful write, with the repo path written. */
 		onsaved: (file: string) => void;
+		ondirty?: (dirty: boolean) => void;
 	}
 
-	let { categories, tools, onsaved }: Props = $props();
+	let { categories, tools, onsaved, ondirty }: Props = $props();
 
 	/* Ids of loaded categories are locked because they are URLs and section keys in about.yaml;
 	   rows added here stay editable. */
@@ -52,6 +53,8 @@
 
 	const usedBy = (id: string) =>
 		tools.filter((t) => t.category === id || t.alsoIn.includes(id)).length;
+
+	$effect(() => ondirty?.(dirty));
 
 	function moved(from: number, to: number) {
 		if (to < 0 || to >= rows.length) return;
