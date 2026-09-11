@@ -2,9 +2,9 @@ import { checkbox, confirm, input, select } from '@inquirer/prompts';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { stdout } from 'node:process';
-import { stringify } from 'yaml';
 import { z } from 'zod';
 import { toolId } from '../src/lib/catalog/id';
+import { toolYaml } from '../src/lib/catalog/yaml';
 import {
 	Game,
 	Platform,
@@ -270,7 +270,7 @@ async function main() {
 	}
 
 	mkdirSync(directory);
-	writeFileSync(resolve(directory, 'about.yaml'), stringify(tool), { flag: 'wx' });
+	writeFileSync(resolve(directory, 'about.yaml'), toolYaml(result.data), { flag: 'wx' });
 	if (screenshots) mkdirSync(resolve(directory, 'shots'));
 
 	stdout.write(`\nCreated tools/${id}/about.yaml\n`);
