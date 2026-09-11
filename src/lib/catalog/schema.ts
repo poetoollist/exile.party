@@ -205,5 +205,6 @@ export type Status = z.infer<typeof Status>;
 export type Platform = z.infer<typeof Platform>;
 export type Video = z.infer<typeof Video>;
 export type Tool = z.infer<typeof Tool>;
+export type ToolMetadata = z.infer<typeof ToolMetadata>;
 export type Category = z.infer<typeof Category>;
 export type Catalog = z.infer<typeof Catalog>;
