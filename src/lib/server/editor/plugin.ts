@@ -39,6 +39,10 @@ export function editorApi(toolsDirectory = resolve(process.cwd(), 'tools')): Plu
 				const path = (req.url ?? '/').split('?')[0];
 				let body: unknown;
 				if (method !== 'GET' && method !== 'DELETE') {
+					if (!(req.headers['content-type'] ?? '').startsWith('application/json')) {
+						send(415, { error: 'Content-Type must be application/json' });
+						return;
+					}
 					try {
 						const text = await readBody(req);
 						body = text ? JSON.parse(text) : undefined;

@@ -13,6 +13,8 @@
 
 	let { sections, written, children }: Props = $props();
 
+	let menuOpen = $state(false);
+
 	const edit = (path: string) => resolve('/edit/[...path]', { path });
 </script>
 
@@ -25,7 +27,7 @@
 			<a href={edit('')} class="hover:text-ink">Tools</a>
 			<a href={edit('new')} class="hover:text-ink">New tool</a>
 			<a href={edit('categories')} class="hover:text-ink">Categories</a>
-			<details class="relative">
+			<details class="relative" bind:open={menuOpen}>
 				<summary class="list-none hover:text-ink">Sections</summary>
 				<ul
 					class="absolute left-0 z-10 mt-2 min-w-56 rounded-md border border-line bg-surface py-1 shadow-sm"
@@ -35,6 +37,7 @@
 							<a
 								href={edit(`sections/${section.id}`)}
 								class="block px-3 py-1.5 hover:bg-surface-hover hover:text-ink"
+								onclick={() => (menuOpen = false)}
 							>
 								{section.name}
 							</a>

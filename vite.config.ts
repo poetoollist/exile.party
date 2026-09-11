@@ -12,7 +12,9 @@ import { editorApi } from './src/lib/server/editor/plugin';
  */
 const EDITOR_ROUTE = '/edit/[...path]';
 function handleUnseenRoutes({ routes, message }: { routes: string[]; message: string }) {
-	if (routes.some((route) => route !== EDITOR_ROUTE)) throw new Error(message);
+	const others = routes.filter((route) => route !== EDITOR_ROUTE);
+	if (others.length > 0)
+		throw new Error(`Unseen routes besides the editor: ${others.join(', ')}\n${message}`);
 }
 
 export default defineConfig({

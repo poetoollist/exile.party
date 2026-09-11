@@ -12,9 +12,11 @@
 		/** After a successful write, with the ids whose about.yaml changed. */
 		onsaved: (changed: string[]) => void;
 		ondirty?: (dirty: boolean) => void;
+		/** A partial write's ids: those files did change even though the request failed overall. */
+		onwritten?: (changed: string[]) => void;
 	}
 
-	let { section, tools, onsaved, ondirty }: Props = $props();
+	let { section, tools, onsaved, ondirty, onwritten }: Props = $props();
 
 	const order = untrack(() => sectionOrder(tools, section.id));
 	const byId = untrack(() => new Map(tools.map((t) => [t.id, t])));
@@ -53,6 +55,12 @@
 			baseline = ranked.join(',');
 			onsaved(saved.changed);
 		} catch (error) {
+			if (error instanceof EditorApiError) {
+				const changed = (error.data as { changed?: unknown } | null)?.changed;
+				if (Array.isArray(changed) && changed.every((id) => typeof id === 'string')) {
+					onwritten?.(changed);
+				}
+			}
 			serverError =
 				error instanceof EditorApiError && error.issues.length > 0
 					? error.issues.map((i) => i.message).join('; ')

@@ -106,8 +106,13 @@ export function createEditorApi(toolsDirectory: string) {
 		const checked = checkTool(id, metadata, loadCatalog(toolsDirectory));
 		if ('issues' in checked) return { status: 400, body: { issues: checked.issues } };
 		const yaml = toolYaml(checked.tool);
-		mkdirSync(toolDir(id));
-		writeText(aboutFile(id), yaml);
+		try {
+			mkdirSync(toolDir(id));
+			writeText(aboutFile(id), yaml);
+		} catch (error) {
+			rmSync(toolDir(id), { recursive: true, force: true });
+			throw error;
+		}
 		return { status: 201, body: { tool: withAssets(checked.tool), yaml } };
 	}
 

@@ -49,7 +49,13 @@
 	const yaml = $derived(categoriesYaml(cleaned));
 	const dirty = $derived(yaml !== baseline);
 	const canSave = $derived(issues.length === 0 && dirty && !busy);
-	const at = (i: number, field: string) => messagesAt(issues, `categories.${i}.${field}`);
+	/* Client and server issues both show under their fields; see topServerIssues for the banner. */
+	const allIssues = $derived([...issues, ...serverIssues]);
+	const at = (i: number, field: string) => messagesAt(allIssues, `categories.${i}.${field}`);
+	/* Server issues with no field on this form: the whole-list path or a row this form no longer has. */
+	const topServerIssues = $derived(
+		serverIssues.filter((issue) => !issue.path.startsWith('categories.'))
+	);
 
 	const usedBy = (id: string) =>
 		tools.filter((t) => t.category === id || t.alsoIn.includes(id)).length;
@@ -79,7 +85,7 @@
 		serverError = null;
 		try {
 			const saved = await api.saveCategories(cleaned);
-			baseline = saved.yaml;
+			baseline = categoriesYaml(saved.categories);
 			onsaved('tools/categories.yaml');
 		} catch (error) {
 			if (error instanceof EditorApiError && error.issues.length > 0) serverIssues = error.issues;
@@ -103,12 +109,12 @@
 			<code class="font-mono text-[12px] text-faint">tools/categories.yaml</code>
 		</div>
 
-		{#if serverError || serverIssues.length > 0}
+		{#if serverError || topServerIssues.length > 0}
 			<div class="rounded-md border border-line bg-surface p-3 text-[12.5px]">
 				{#if serverError}
 					<p class="text-danger">{serverError}</p>
 				{/if}
-				{#each serverIssues as issue, i (i)}
+				{#each topServerIssues as issue, i (i)}
 					<p class="text-danger">
 						<code class="font-mono text-[12px]">{issue.path}</code>
 						{issue.message}

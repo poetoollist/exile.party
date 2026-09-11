@@ -115,7 +115,7 @@
 					ondeleted={(id) => {
 						unsaved = false;
 						noteWritten(`tools/${id}/ (deleted)`);
-						void reload().then(() => goto(edit('')));
+						void goto(edit('')).then(reload);
 					}}
 					ondirty={(d) => (unsaved = d)}
 				/>
@@ -150,6 +150,7 @@
 							void reload();
 						}}
 						ondirty={(d) => (unsaved = d)}
+						onwritten={(changed) => noteWritten(...changed.map((id) => `tools/${id}/about.yaml`))}
 					/>
 				{/key}
 			{/key}

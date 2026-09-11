@@ -175,6 +175,7 @@
 			ondeleted?.(id);
 		} catch (error) {
 			serverError = errorText(error);
+		} finally {
 			busy = false;
 		}
 	}
@@ -229,7 +230,12 @@
 					/>
 				</Field>
 			{/if}
-			<Field label="Author" id="author" hint="As they call themselves." issues={at('author')}>
+			<Field
+				label="Author"
+				id="author"
+				hint="As they call themselves. {draft.author?.length ?? 0}/60"
+				issues={at('author')}
+			>
 				<input id="author" class={INPUT} bind:value={draft.author} />
 			</Field>
 			<Field

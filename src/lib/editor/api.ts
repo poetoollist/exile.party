@@ -7,7 +7,8 @@ export class EditorApiError extends Error {
 	constructor(
 		message: string,
 		readonly status: number,
-		readonly issues: Issue[] = []
+		readonly issues: Issue[] = [],
+		readonly data: unknown = undefined
 	) {
 		super(message);
 		this.name = 'EditorApiError';
@@ -29,7 +30,8 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 		throw new EditorApiError(
 			data.error ?? `${method} ${path} failed with ${response.status}`,
 			response.status,
-			data.issues ?? []
+			data.issues ?? [],
+			data
 		);
 	}
 	return data as T;
