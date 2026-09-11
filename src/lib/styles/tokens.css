@@ -22,6 +22,7 @@
 	--accent-on-fill: #ffffff;
 	--accent-tint: #e9ecfb;
 	--accent-line: rgb(10 33 192 / 0.28);
+	--danger: #b42318;
 
 	/* Decorative art over the canvas: in light it prints like ink, in dark only its lit parts emerge. */
 	--art-blend: multiply;
@@ -60,6 +61,7 @@
 		--accent-on-fill: #ffffff;
 		--accent-tint: #050a44;
 		--accent-line: rgb(123 143 240 / 0.35);
+		--danger: #f97066;
 
 		/* Decorative art over the canvas: in light it prints like ink, in dark only its lit parts emerge. */
 		--art-blend: screen;
@@ -90,6 +92,7 @@
 	--accent-on-fill: #ffffff;
 	--accent-tint: #050a44;
 	--accent-line: rgb(123 143 240 / 0.35);
+	--danger: #f97066;
 
 	/* Decorative art over the canvas: in light it prints like ink, in dark only its lit parts emerge. */
 	--art-blend: screen;
@@ -117,6 +120,7 @@
 	--color-accent-on-fill: var(--accent-on-fill);
 	--color-accent-tint: var(--accent-tint);
 	--color-accent-line: var(--accent-line);
+	--color-danger: var(--danger);
 
 	--color-brand-tile: var(--brand-tile);
 	--color-brand-glyph: var(--brand-glyph);
