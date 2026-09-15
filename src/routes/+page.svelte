@@ -210,6 +210,12 @@
 <style>
 	@reference './layout.css';
 
+	/* The full-bleed chooser needs the viewport's entire width, including the space normally
+	   reserved for the directory's scrollbar. CSS also applies before hydration and without JS. */
+	:global(html:has(.chooser)) {
+		scrollbar-gutter: auto;
+	}
+
 	/* The root floats over the new page from the moment a half is picked; the reveal clips it
 	   away once the navigation has landed. */
 	.chooser[data-picked] {
