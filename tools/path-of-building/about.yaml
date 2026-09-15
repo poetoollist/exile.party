@@ -1,6 +1,7 @@
 name: Path of Building
 author: Path of Building Community
-headline: Plan a build offline with the full tree, skills and gear calculated
+headline: Some claim this is the real game. Plan your build with the full tree,
+  skills and gear calculation
 description: Offline build planner with full passive tree, skill, and gear calculations.
 url: https://pathofbuilding.community/
 games:
@@ -26,7 +27,7 @@ rank:
   start-here: 1
 status: active
 lastVerified: 2026-09-07
-notes: PoE1 and PoE2 are separate builds from the same project.
+notes: Check out POBRedux if you want something a little more current in terms of UI
 screenshots:
   - passive-tree.webp
   - items.webp

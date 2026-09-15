@@ -21,8 +21,7 @@ rank:
   atlas-and-maps: 3
 status: active
 lastVerified: 2026-09-08
-notes: Ad-supported. Layouts change at the daily server reset, and the site's
-  bot protection may show a verification screen first.
+notes: Layouts change at the daily server reset.
 screenshots:
   - uber-lab-layout.webp
 videos:

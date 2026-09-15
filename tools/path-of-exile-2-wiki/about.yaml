@@ -1,7 +1,7 @@
 name: Path of Exile 2 Wiki
 headline: The community-maintained wiki for the sequel's classes, skills, items
   and mechanics
-description: Community-maintained MediaWiki reference for classes, ascendancies,
+description: Community-maintained Wiki reference for classes, ascendancies,
   skills, items, mechanics and patch history, run by the same team as the
   original game's wiki.
 url: https://www.poe2wiki.net/
@@ -20,8 +20,7 @@ rank:
   start-here: 3
 status: active
 lastVerified: 2026-09-08
-notes: Still marked work in progress by its editors. Bot protection may show a
-  short verification screen on first load.
+notes: The other PoE2 Wikis are trash. Use this one.
 screenshots:
   - main-page.webp
   - unique-item.webp

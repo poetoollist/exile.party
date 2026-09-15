@@ -1,6 +1,7 @@
 name: Scalpel
 author: FrederickFartHammer
-headline: Edit your loot filter, price check and build regex without leaving the game
+headline: A gorgeous all-in-one overlay for both games - Price check, edit your
+  filter, generate regex and much more.
 description: Overlay that edits your loot filter, price checks items, and
   generates regex without leaving the game.
 url: https://scalpel.fourth.party/
@@ -24,6 +25,7 @@ pricing: free
 openSource: true
 source: https://github.com/scalpelpoe/scalpel
 byMaintainer: true
+editorsPick: true
 rank:
   overlays-and-companions: 3
   trade: 1

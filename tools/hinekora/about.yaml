@@ -23,8 +23,6 @@ rank:
   overlays-and-companions: 2
 status: active
 lastVerified: 2026-09-08
-notes: Aura Manager mirrors the game through OBS; its Terms of Service status is
-  uncertain, so use it at your own risk.
 screenshots:
   - app.png
   - clip.png

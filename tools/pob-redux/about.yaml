@@ -24,8 +24,7 @@ editorsPick: true
 status: active
 lastVerified: 2026-09-15
 notes: Runs Path of Building Community's engine and shares its build folders, so
-  both apps open the same files. The assistant, MCP server and Build Planner
-  import are PoE2-only for now. Linux packages are built but untested.
+  both apps open the same files.
 screenshots:
   - passive-tree.webp
   - optimise.webp

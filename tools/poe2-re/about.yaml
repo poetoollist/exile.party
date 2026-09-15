@@ -21,7 +21,7 @@ rank:
   regex-and-search: 2
 status: active
 lastVerified: 2026-09-08
-notes: Shares a codebase with poe.re; league and economy data refresh hourly.
+notes: PoE1 has it's own site at poe.re
 screenshots:
   - vendor.webp
   - waystones.webp

@@ -1,5 +1,5 @@
 name: Exile Compass
-headline: An overlay that guides you through both campaigns without alt-tabbing
+headline: An overlay that guides you through both campaigns
 description: In-game overlay that tracks campaign progress, imports Path of
   Building builds, writes regex stash searches, times runs, and takes voice
   commands.
@@ -31,7 +31,6 @@ rank:
   overlays-and-companions: 4
 status: active
 lastVerified: 2026-09-07
-notes: PoE2 gets the full feature set; PoE1 support is focused on levelling.
 screenshots:
   - campaign-guide.webp
   - regex.webp

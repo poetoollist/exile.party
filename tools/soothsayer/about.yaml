@@ -19,8 +19,6 @@ openSource: true
 byMaintainer: true
 status: active
 lastVerified: 2026-09-08
-notes: Path of Exile 2 support is implemented, but stacked decks are not
-  currently available there.
 screenshots:
   - current-session.png
   - session-detail.png

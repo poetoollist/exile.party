@@ -23,8 +23,7 @@ rank:
   regex-and-search: 1
 status: active
 lastVerified: 2026-09-08
-notes: The map-mods generator doubles as a dangerous-mod checker through stash
-  search. PoE2 has its own site at poe2.re.
+notes: PoE2 has its own site at poe2.re.
 screenshots:
   - vendor.webp
   - map-mods.webp

@@ -19,8 +19,7 @@ openSource: true
 source: https://github.com/deathbeam/maps-of-exile
 status: active
 lastVerified: 2026-09-08
-notes: Card prices come from poe.ninja and are unreliable early in a league;
-  switch the price source to Standard until they settle.
+notes: Card prices come from poe.ninja and are unreliable early in a league
 screenshots:
   - map-list.webp
   - cards.webp
