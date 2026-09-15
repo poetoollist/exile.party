@@ -69,9 +69,9 @@ export function restBox(card: Rect): Rect {
 	return { left: card.left, top: card.top, width: 0, height: card.height };
 }
 
-/** Clips a full-viewport layer to the rectangle. */
-export function insetOf(r: Rect): string {
-	return `inset(${px(r.top)} calc(100% - ${px(r.left + r.width)}) calc(100% - ${px(r.top + r.height)}) ${px(r.left)})`;
+/** Clips a full-viewport layer to the rectangle, optionally rounding its corners. */
+export function insetOf(r: Rect, radius = 0): string {
+	return `inset(${px(r.top)} calc(100% - ${px(r.left + r.width)}) calc(100% - ${px(r.top + r.height)}) ${px(r.left)} round ${px(radius)})`;
 }
 
 function box(r: Rect): Keyframe {
@@ -94,11 +94,20 @@ export function windowKeyframes(
 ): WindowKeyframes {
 	const open = dir === 'open';
 	const rest = restBox(card);
+	// Grow the corners with the window. Finish just outside the screen so rounded
+	// corners disappear naturally past its edges instead of flattening mid-flight.
+	const expandedRadius = 24;
+	const full = {
+		left: viewport.left - expandedRadius,
+		top: viewport.top - expandedRadius,
+		width: viewport.width + expandedRadius * 2,
+		height: viewport.height + expandedRadius * 2
+	};
 	const mid = open ? SWEEP : 1 - SWEEP;
 	const inE = WINDOW_IN_EASE;
 	const outE = WINDOW_OUT_EASE;
 	const size = { width: px(card.width), height: px(card.height) };
-	const pinned = `translate(${px(card.left)}, ${px(card.top)})`;
+	const pinned = `translate(${px(card.left - full.left)}, ${px(card.top - full.top)})`;
 	const origin = 'translate(0px, 0px)';
 	const ringOn = Math.min(RING_SHARE, SWEEP);
 
@@ -107,12 +116,12 @@ export function windowKeyframes(
 				group: [
 					{ ...box(rest), easing: inE },
 					{ ...box(card), offset: mid, easing: outE },
-					box(viewport)
+					box(full)
 				],
 				root: [
-					{ clipPath: insetOf(rest), easing: inE },
-					{ clipPath: insetOf(card), offset: mid, easing: outE },
-					{ clipPath: 'inset(0px)' }
+					{ clipPath: insetOf(rest, 8), easing: inE },
+					{ clipPath: insetOf(card, 8), offset: mid, easing: outE },
+					{ clipPath: insetOf(full, expandedRadius) }
 				],
 				heldTransform: [
 					{ ...size, transform: origin, easing: inE },
@@ -127,21 +136,21 @@ export function windowKeyframes(
 				ring: [
 					{ borderRadius: '8px', boxShadow: NO_RING },
 					{ borderRadius: '8px', boxShadow: ring, offset: ringOn },
-					{ borderRadius: '8px', boxShadow: ring, offset: mid },
-					{ borderRadius: '2px', boxShadow: ring, offset: 0.8 },
-					{ borderRadius: '0px', boxShadow: NO_RING }
+					{ borderRadius: '8px', boxShadow: ring, offset: mid, easing: outE },
+					{ boxShadow: ring, offset: 0.8 },
+					{ borderRadius: px(expandedRadius), boxShadow: NO_RING, easing: inE }
 				]
 			}
 		: {
 				group: [
-					{ ...box(viewport), easing: inE },
+					{ ...box(full), easing: inE },
 					{ ...box(card), offset: mid, easing: outE },
 					box(rest)
 				],
 				root: [
-					{ clipPath: 'inset(0px)', easing: inE },
-					{ clipPath: insetOf(card), offset: mid, easing: outE },
-					{ clipPath: insetOf(rest) }
+					{ clipPath: insetOf(full, expandedRadius), easing: inE },
+					{ clipPath: insetOf(card, 8), offset: mid, easing: outE },
+					{ clipPath: insetOf(rest, 8) }
 				],
 				heldTransform: [
 					{ ...size, transform: pinned, easing: inE },
@@ -154,9 +163,9 @@ export function windowKeyframes(
 					{ clipPath: FACE_WHOLE }
 				],
 				ring: [
-					{ borderRadius: '0px', boxShadow: NO_RING },
-					{ borderRadius: '2px', boxShadow: ring, offset: 0.2 },
-					{ borderRadius: '8px', boxShadow: ring, offset: mid },
+					{ borderRadius: px(expandedRadius), boxShadow: NO_RING, easing: inE },
+					{ boxShadow: ring, offset: 0.2 },
+					{ borderRadius: '8px', boxShadow: ring, offset: mid, easing: outE },
 					{ borderRadius: '8px', boxShadow: ring, offset: 1 - ringOn },
 					{ borderRadius: '8px', boxShadow: NO_RING }
 				]

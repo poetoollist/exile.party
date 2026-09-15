@@ -56,7 +56,7 @@ describe('restBox', () => {
 describe('insetOf', () => {
 	it('clips a full-viewport layer to the rectangle', () => {
 		expect(insetOf({ left: 10, top: 20, width: 100, height: 50 })).toBe(
-			'inset(20px calc(100% - 110px) calc(100% - 70px) 10px)'
+			'inset(20px calc(100% - 110px) calc(100% - 70px) 10px round 0px)'
 		);
 	});
 });
@@ -65,9 +65,9 @@ describe('windowKeyframes, open', () => {
 	const k = windowKeyframes('open', card, viewport, RING);
 
 	it('grows the group from the rest line across the card, then out to the viewport', () => {
-		expect(k.group.map((f) => f.width)).toEqual(['0px', '278.5px', '1440px']);
+		expect(k.group.map((f) => f.width)).toEqual(['0px', '278.5px', '1488px']);
 		expect(transform(k.group[0].transform)).toEqual({ x: 418, y: 672, scale: 1 });
-		expect(transform(k.group[2].transform)).toEqual({ x: 0, y: 0, scale: 1 });
+		expect(transform(k.group[2].transform)).toEqual({ x: -24, y: -24, scale: 1 });
 		expect(offsets(k.group)).toEqual([undefined, SWEEP, undefined]);
 	});
 
@@ -78,9 +78,9 @@ describe('windowKeyframes, open', () => {
 
 	it('clips the new page to the same box', () => {
 		expect(k.root.map((f) => f.clipPath)).toEqual([
-			insetOf(restBox(card)),
-			insetOf(card),
-			'inset(0px)'
+			insetOf(restBox(card), 8),
+			insetOf(card, 8),
+			'inset(-24px calc(100% - 1464px) calc(100% - 924px) -24px round 24px)'
 		]);
 		expect(offsets(k.root)).toEqual([undefined, SWEEP, undefined]);
 	});
@@ -88,7 +88,7 @@ describe('windowKeyframes, open', () => {
 	it('pins the card snapshot where the card was while the box moves under it', () => {
 		// The image sits at the group’s origin, so it needs the card’s offset once the box reaches (0, 0).
 		expect(transform(k.heldTransform[0].transform)).toEqual({ x: 0, y: 0, scale: 1 });
-		expect(transform(k.heldTransform[2].transform)).toEqual({ x: 418, y: 672, scale: 1 });
+		expect(transform(k.heldTransform[2].transform)).toEqual({ x: 442, y: 696, scale: 1 });
 		for (const f of k.heldTransform) {
 			expect(f.width).toBe('278.5px');
 			expect(f.height).toBe('118px');
@@ -108,7 +108,7 @@ describe('windowKeyframes, open', () => {
 	it('draws the ring once the box has width and dissolves it as the box fills the viewport', () => {
 		expect(k.ring[0].boxShadow).not.toBe(RING);
 		expect(k.ring[1]).toMatchObject({ boxShadow: RING, offset: RING_SHARE });
-		expect(k.ring.at(-1)).toMatchObject({ borderRadius: '0px' });
+		expect(k.ring.at(-1)).toMatchObject({ borderRadius: '24px' });
 		expect(k.ring.at(-1)?.boxShadow).not.toBe(RING);
 		const o = k.ring.map((f) => f.offset ?? null);
 		const numeric = o.filter((v): v is number => v !== null);
@@ -120,12 +120,12 @@ describe('windowKeyframes, close', () => {
 	const k = windowKeyframes('close', card, viewport, RING);
 
 	it('runs the open path backwards with the sweep at the end', () => {
-		expect(k.group.map((f) => f.width)).toEqual(['1440px', '278.5px', '0px']);
+		expect(k.group.map((f) => f.width)).toEqual(['1488px', '278.5px', '0px']);
 		expect(offsets(k.group)).toEqual([undefined, 1 - SWEEP, undefined]);
 		expect(k.root.map((f) => f.clipPath)).toEqual([
-			'inset(0px)',
-			insetOf(card),
-			insetOf(restBox(card))
+			'inset(-24px calc(100% - 1464px) calc(100% - 924px) -24px round 24px)',
+			insetOf(card, 8),
+			insetOf(restBox(card), 8)
 		]);
 	});
 
@@ -136,7 +136,7 @@ describe('windowKeyframes, close', () => {
 			'inset(0px 0px 0px 0px)'
 		]);
 		expect(offsets(k.heldClip)).toEqual([undefined, 1 - SWEEP, undefined]);
-		expect(transform(k.heldTransform[0].transform)).toEqual({ x: 418, y: 672, scale: 1 });
+		expect(transform(k.heldTransform[0].transform)).toEqual({ x: 442, y: 696, scale: 1 });
 		expect(transform(k.heldTransform[2].transform)).toEqual({ x: 0, y: 0, scale: 1 });
 	});
 
