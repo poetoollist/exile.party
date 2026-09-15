@@ -5,6 +5,9 @@ node_modules
 /.svelte-kit
 /build
 
+# Local state from `wrangler pages dev`
+/.wrangler
+
 # Test output
 test-results
 

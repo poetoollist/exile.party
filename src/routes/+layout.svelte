@@ -42,4 +42,5 @@
 	{@render children()}
 </div>
 
-<SubmitDialog categoryIds={data.categoryIds} />
+<!-- The 404.html fallback boots with no root layout data, so the ids can be missing there. -->
+<SubmitDialog categoryIds={data.categoryIds ?? []} />

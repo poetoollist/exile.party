@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>{page.status} · PoE Tool List</title>
+	<title>{page.status} · exile.party</title>
 </svelte:head>
 
 <main>

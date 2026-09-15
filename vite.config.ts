@@ -27,7 +27,9 @@ export default defineConfig({
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
-			adapter: adapter({ pages: 'build', assets: 'build', strict: true }),
+			// Cloudflare Pages answers any path without a file with 404.html and a 404 status. Without
+			// that file it treats the site as a single-page app and serves index.html with a 200 instead.
+			adapter: adapter({ pages: 'build', assets: 'build', fallback: '404.html' }),
 			prerender: { handleUnseenRoutes }
 		})
 	],
