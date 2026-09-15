@@ -1,0 +1,33 @@
+name: PoB Redux
+headline: Plan builds in a new Path of Building interface that also reviews and
+  optimises them
+description: Desktop app that runs Path of Building's own calculations in a new
+  interface, adding a build optimiser, an optional AI assistant, and an MCP
+  server.
+url: https://pobredux.com/
+games:
+  - poe1
+  - poe2
+category: build-planning
+tags:
+  - import-export
+  - dps-calculator
+  - ai-assistant
+platforms:
+  - windows
+  - linux
+pricing: free
+openSource: true
+source: https://github.com/juddisjudd/pob-redux
+byMaintainer: true
+editorsPick: true
+status: active
+lastVerified: 2026-09-15
+notes: Runs Path of Building Community's engine and shares its build folders, so
+  both apps open the same files. The assistant, MCP server and Build Planner
+  import are PoE2-only for now. Linux packages are built but untested.
+screenshots:
+  - passive-tree.webp
+  - optimise.webp
+  - items.webp
+  - poe1-passive-tree.webp
