@@ -1,0 +1,32 @@
+name: PoE2 Oracle
+headline: Price check items with Ctrl+E and see XP rate and time to the next
+  level on the HUD
+description: Price check overlay that shows the cheapest similar listings on the
+  official trade site, prices Currency Exchange items from GGG's hourly trade
+  data, and adds XP rate and map timer plates to the game's HUD.
+url: https://oracle.pushka.biz/?from=lists
+games:
+  - poe2
+category: trade
+alsoIn:
+  - overlays-and-companions
+  - leveling-and-guides
+tags:
+  - price-check
+  - overlay
+  - hotkey
+  - currency
+  - xp-tracker
+platforms:
+  - windows
+pricing: free
+openSource: true
+source: https://github.com/mttzzz/poe2-oracle
+status: active
+lastVerified: 2026-10-05
+notes: Needs the game in Windowed or Windowed Fullscreen mode, since Windows
+  hides other programs over exclusive Fullscreen.
+screenshots:
+  - price-check.webp
+  - currency-market.webp
+  - xp-overlay.webp
