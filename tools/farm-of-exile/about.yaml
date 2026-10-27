@@ -1,0 +1,23 @@
+name: Farm of Exile
+headline: Compare currency farming strategies by profit per hour with live prices
+description: Currency farming guides with setup costs, expected drops and
+  profit per hour, recalculated from live economy prices and tracked over
+  time.
+url: https://farmofexile.com/
+games:
+  - poe1
+  - poe2
+category: economy-and-data
+tags:
+  - farming
+  - currency
+  - profit
+  - economy
+platforms:
+  - web
+pricing: free
+openSource: false
+status: active
+lastVerified: 2026-10-27
+screenshots:
+  - home.webp
