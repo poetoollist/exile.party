@@ -18,7 +18,7 @@
 		type Filters
 	} from '$lib/catalog/filter';
 	import { groupBySection, inSection, sections, sectionPreview } from '$lib/catalog/home';
-	import { Platform, type Catalog, type Game } from '$lib/catalog/schema';
+	import { Language, Platform, type Catalog, type Game } from '$lib/catalog/schema';
 	import { searchPalette } from '$lib/search.svelte';
 	import { submitDialog } from '$lib/submit.svelte';
 
@@ -60,6 +60,9 @@
 	/** Platforms any pooled tool runs on, in schema order, so the panel never offers an empty box. */
 	const platforms = $derived(
 		Platform.options.filter((p) => pool.some((t) => t.platforms.includes(p)))
+	);
+	const languages = $derived(
+		Language.options.filter((language) => pool.some((t) => t.languages.includes(language)))
 	);
 
 	const visible = $derived(filterTools(pool, filters));
@@ -104,7 +107,7 @@
 			<h1 class="text-[22px] leading-tight font-medium tracking-tight text-ink">
 				{filters.game ? `${GAME_NAME[filters.game]} tools` : 'All tools'}
 			</h1>
-			<div class="flex items-center gap-3">
+			<div class="ml-auto flex items-center gap-3">
 				<p class="text-[12.5px] text-faint tabular-nums">
 					{visible.length}
 					{#if visible.length !== pool.length}
@@ -115,6 +118,7 @@
 				<FiltersPanel
 					bind:filters
 					{platforms}
+					{languages}
 					shown={visible.length}
 					total={pool.length}
 					{countFor}

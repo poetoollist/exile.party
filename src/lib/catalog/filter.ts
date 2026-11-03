@@ -1,19 +1,28 @@
-import { Game, Platform, Pricing, type Tool } from './schema';
+import { Game, Language, Platform, Pricing, type Tool } from './schema';
 
 export const STALE_AFTER_DAYS = 180;
 
 export const CODES = ['open', 'closed'] as const;
 export type Code = (typeof CODES)[number];
+/** English is the shared baseline, so only additional languages constrain results. */
+export const FILTER_LANGUAGES = Language.options.filter((language) => language !== 'en');
 
 export interface Filters {
 	game: Game | null;
-	/** Any of; an empty set is no constraint. Same for pricing and code. */
+	/** Any of; an empty set is no constraint. Same for pricing, code and languages. */
 	platforms: Platform[];
 	pricing: Pricing[];
 	code: Code[];
+	languages: Exclude<Language, 'en'>[];
 }
 
-export const EMPTY_FILTERS: Filters = { game: null, platforms: [], pricing: [], code: [] };
+export const EMPTY_FILTERS: Filters = {
+	game: null,
+	platforms: [],
+	pricing: [],
+	code: [],
+	languages: []
+};
 
 /** `now` is the build timestamp (ISO string) so prerendered HTML matches hydration. */
 export function isStale(lastVerified: string, now: string, days = STALE_AFTER_DAYS): boolean {
@@ -30,7 +39,8 @@ export function filterTools(tools: readonly Tool[], f: Filters): Tool[] {
 			(f.game === null || t.games.includes(f.game)) &&
 			(f.platforms.length === 0 || t.platforms.some((p) => f.platforms.includes(p))) &&
 			anyOf(f.pricing, t.pricing) &&
-			anyOf(f.code, t.openSource ? 'open' : 'closed')
+			anyOf(f.code, t.openSource ? 'open' : 'closed') &&
+			(f.languages.length === 0 || f.languages.some((language) => t.languages.includes(language)))
 	);
 }
 
@@ -57,14 +67,20 @@ export function searchTools(tools: readonly Tool[], query: string): Tool[] {
 
 /** Game lives in the top bar, so it does not count. */
 export function activeFilterCount(f: Filters): number {
-	return f.platforms.length + f.pricing.length + f.code.length;
+	return f.platforms.length + f.pricing.length + f.code.length + f.languages.length;
 }
 
 export function toggle<T>(list: readonly T[], value: T): T[] {
 	return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 }
 
-const KEYS = { game: 'game', platforms: 'platform', pricing: 'price', code: 'code' } as const;
+const KEYS = {
+	game: 'game',
+	platforms: 'platform',
+	pricing: 'price',
+	code: 'code',
+	languages: 'language'
+} as const;
 
 /** Schema order, so the same selection always gives the same URL. */
 function canonical<T extends string>(set: readonly T[], allowed: readonly T[]): string {
@@ -78,6 +94,7 @@ export function toSearchParams(f: Filters): URLSearchParams {
 	if (f.platforms.length) p.set(KEYS.platforms, canonical(f.platforms, Platform.options));
 	if (f.pricing.length) p.set(KEYS.pricing, canonical(f.pricing, Pricing.options));
 	if (f.code.length) p.set(KEYS.code, canonical(f.code, CODES));
+	if (f.languages.length) p.set(KEYS.languages, canonical(f.languages, FILTER_LANGUAGES));
 	return p;
 }
 
@@ -92,6 +109,7 @@ export function fromSearchParams(p: URLSearchParams): Filters {
 		game: game.success ? game.data : null,
 		platforms: pickSet(p.get(KEYS.platforms), Platform.options),
 		pricing: pickSet(p.get(KEYS.pricing), Pricing.options),
-		code: pickSet(p.get(KEYS.code), CODES)
+		code: pickSet(p.get(KEYS.code), CODES),
+		languages: pickSet(p.get(KEYS.languages), FILTER_LANGUAGES)
 	};
 }

@@ -41,6 +41,77 @@ test('the chooser offers both games with live counts', async ({ page }) => {
 	).toBeVisible();
 });
 
+for (const route of ['/tools', '/poe1', '/poe2']) {
+	test(`language filters persist and reset on ${route}`, async ({ page }) => {
+		await page.goto(route);
+		const filtersButton = page.getByRole('button', { name: /^Filters/ });
+		const panel = page.locator('#filters-panel');
+		await untilVisible(() => filtersButton.click(), panel);
+		const english = panel.getByLabel('English');
+		await expect(english).toBeChecked();
+		await expect(english).toBeDisabled();
+		await expect(panel.getByRole('button', { name: 'Reset all' })).toBeDisabled();
+
+		await panel.getByLabel('Deutsch (German)').check();
+		await expect(page).toHaveURL(`${route}?language=de`);
+		await expect(filtersButton).toHaveText('Filters 1');
+		await expect(page.locator('main p.tabular-nums').first()).toContainText('1 of');
+		const tools = page.locator('main li[data-games] a[href^="/tools/"]');
+		await expect(tools.first()).toBeVisible();
+		for (const tool of await tools.all()) {
+			await expect(tool).toHaveAttribute('href', '/tools/poe-ninja');
+		}
+
+		await panel.getByLabel('日本語 (Japanese)').check();
+		await expect(page).toHaveURL(`${route}?language=de%2Cja`);
+		await expect(filtersButton).toHaveText('Filters 2');
+		await page.reload();
+		await untilVisible(() => filtersButton.click(), panel);
+		await expect(panel.getByLabel('Deutsch (German)')).toBeChecked();
+		await expect(panel.getByLabel('日本語 (Japanese)')).toBeChecked();
+		await expect(english).toBeChecked();
+
+		await panel.getByLabel('Open source').check();
+		await expect(page.getByText('No tools match these filters.')).toBeVisible();
+		await panel.getByRole('button', { name: 'Reset all' }).click();
+		await expect(page).toHaveURL(route);
+		await expect(english).toBeChecked();
+		await expect(english).toBeDisabled();
+		await expect(panel.getByLabel('Deutsch (German)')).not.toBeChecked();
+		await expect(panel.getByLabel('日本語 (Japanese)')).not.toBeChecked();
+		await expect(page.getByText('No tools match these filters.')).toHaveCount(0);
+		await expect(filtersButton).toHaveText('Filters');
+	});
+}
+
+test('language options scroll while reset stays visible on a small screen', async ({ page }) => {
+	await page.setViewportSize({ width: 375, height: 667 });
+	await page.goto('/poe1');
+	const panel = page.locator('#filters-panel');
+	await untilVisible(() => page.getByRole('button', { name: /^Filters/ }).click(), panel);
+	await panel.getByLabel('繁體中文 (Traditional Chinese)').check();
+	await expect(page).toHaveURL('/poe1?language=zh-Hant');
+	await expect(panel.getByRole('button', { name: 'Reset all' })).toBeInViewport();
+	const bounds = await panel.boundingBox();
+	expect(bounds!.x).toBeGreaterThanOrEqual(0);
+	expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(375);
+	expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(667);
+});
+
+test('tool pages list their supported languages', async ({ page }) => {
+	await page.goto('/tools/poe-ninja');
+	const languages = page
+		.locator('dt')
+		.filter({ hasText: /^Languages$/ })
+		.locator('+ dd');
+	await expect(languages).toContainText('English');
+	await expect(languages).toContainText('Deutsch (German)');
+	await expect(languages).toContainText('Português (Brasil)');
+	await expect(languages).toContainText('繁體中文 (Traditional Chinese)');
+	await page.goto('/tools/path-of-building');
+	await expect(languages).toHaveText('English');
+});
+
 test('picking a game lands on its page and is remembered', async ({ page }) => {
 	await page.goto('/');
 	await page.getByRole('link', { name: /^Path of Exile 2 tools/ }).click();

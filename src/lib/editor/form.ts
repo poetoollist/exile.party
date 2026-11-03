@@ -20,6 +20,7 @@ export function emptyTool(): ToolDraft {
 		alsoIn: [],
 		tags: [],
 		platforms: [],
+		languages: ['en'],
 		pricing: 'free',
 		openSource: false,
 		official: false,

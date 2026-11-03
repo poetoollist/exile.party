@@ -19,6 +19,7 @@ const tool = (over: Partial<Tool> & { id: string }): Tool => ({
 	alsoIn: [],
 	tags: [],
 	platforms: ['web'],
+	languages: ['en'],
 	pricing: 'free',
 	openSource: false,
 	official: false,

@@ -3,10 +3,12 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { stdout } from 'node:process';
 import { z } from 'zod';
+import { LANGUAGE_LABEL } from '../src/lib/catalog/display';
 import { toolId } from '../src/lib/catalog/id';
 import { toolYaml } from '../src/lib/catalog/yaml';
 import {
 	Game,
+	Language,
 	Platform,
 	Pricing,
 	Status,
@@ -224,6 +226,13 @@ async function main() {
 	};
 
 	stdout.write('\nOptional fields\n');
+	tool.languages = await checkbox({
+		message: 'Additional languages (English is always included)',
+		choices: Language.options
+			.filter((language) => language !== 'en')
+			.map((value) => ({ name: LANGUAGE_LABEL[value], value })),
+		loop: false
+	});
 
 	if (
 		games.length > 1 &&

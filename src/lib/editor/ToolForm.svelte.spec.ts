@@ -23,6 +23,14 @@ test('shows a field issue and keeps Save disabled until the draft is valid and c
 
 	const save = screen.getByRole('button', { name: 'Save' });
 	await expect.element(save).toBeDisabled();
+	await expect.element(screen.getByLabelText('English')).toBeChecked();
+	await expect.element(screen.getByLabelText('English')).toBeDisabled();
+	const german = screen.getByLabelText('Deutsch (German)');
+	await german.click();
+	await expect.element(save).toBeEnabled();
+	await expect.element(screen.getByText(/languages:\s+- de/)).toBeVisible();
+	await german.click();
+	await expect.element(save).toBeDisabled();
 
 	const name = screen.getByLabelText('Name', { exact: true });
 	await name.fill('');

@@ -13,6 +13,7 @@ function tool(id: string, extra: Partial<Tool> = {}): Tool {
 		alsoIn: [],
 		tags: [],
 		platforms: ['web'],
+		languages: ['en'],
 		pricing: 'free',
 		openSource: false,
 		official: false,

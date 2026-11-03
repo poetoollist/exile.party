@@ -17,6 +17,7 @@ const TOOL_KEYS: readonly (keyof ToolMetadata)[] = [
 	'alsoIn',
 	'tags',
 	'platforms',
+	'languages',
 	'pricing',
 	'openSource',
 	'source',
@@ -73,7 +74,11 @@ function pick<T extends object>(
 
 /** The about.yaml text for one tool: canonical key order, schema defaults left out, LF line endings. */
 export function toolYaml(tool: ToolMetadata): string {
-	const out = pick(tool, TOOL_KEYS, TOOL_FLAGS);
+	const out = pick(
+		{ ...tool, languages: tool.languages.filter((language) => language !== 'en') },
+		TOOL_KEYS,
+		TOOL_FLAGS
+	);
 	if (tool.videos.length > 0) {
 		out.videos = tool.videos.map((video) => pick(video, VIDEO_KEYS, VIDEO_FLAGS));
 	}

@@ -1,32 +1,41 @@
 <script lang="ts">
-	import { PLATFORM_LABEL, PRICING_LABEL } from '$lib/catalog/display';
+	import { LANGUAGE_LABEL, PLATFORM_LABEL, PRICING_LABEL } from '$lib/catalog/display';
 	import { CODES, activeFilterCount, toggle, type Code, type Filters } from '$lib/catalog/filter';
-	import { Pricing, type Platform } from '$lib/catalog/schema';
+	import { Pricing, type Language, type Platform } from '$lib/catalog/schema';
 
 	interface Props {
 		filters: Filters;
 		/** Platforms present in the pool, in schema order; the panel offers only these. */
 		platforms: Platform[];
+		/** Languages present in the pool, including the shared English baseline. */
+		languages: Language[];
 		shown: number;
 		total: number;
 		/** How many tools a value would match on its own within its set, with the other sets as they are. */
 		countFor: (over: Partial<Filters>) => number;
 	}
 
-	let { filters = $bindable(), platforms, shown, total, countFor }: Props = $props();
+	let { filters = $bindable(), platforms, languages, shown, total, countFor }: Props = $props();
 
 	let open = $state(false);
 	let root = $state<HTMLDivElement | null>(null);
 	let button = $state<HTMLButtonElement | null>(null);
+	let availableHeight = $state(0);
 
 	const active = $derived(activeFilterCount(filters));
 
 	const CODE_LABEL: Record<Code, string> = { open: 'Open source', closed: 'Closed source' };
 
 	function show() {
+		measureHeight();
 		open = true;
 		// The panel renders on the next tick; focus its first box once it exists.
-		queueMicrotask(() => root?.querySelector<HTMLInputElement>('input')?.focus());
+		queueMicrotask(() => root?.querySelector<HTMLInputElement>('input:not(:disabled)')?.focus());
+	}
+
+	function measureHeight() {
+		if (root)
+			availableHeight = Math.max(0, window.innerHeight - root.getBoundingClientRect().bottom - 24);
 	}
 
 	function hide(refocus = true) {
@@ -36,7 +45,7 @@
 	}
 
 	function reset() {
-		filters = { ...filters, platforms: [], pricing: [], code: [] };
+		filters = { ...filters, platforms: [], pricing: [], code: [], languages: [] };
 	}
 
 	function onkeydown(event: KeyboardEvent) {
@@ -52,13 +61,27 @@
 	}
 </script>
 
-<svelte:window {onkeydown} {onpointerdown} />
+<svelte:window {onkeydown} {onpointerdown} onresize={measureHeight} />
 
-{#snippet box(label: string, checked: boolean, count: number, onchange: () => void)}
+{#snippet box(
+	label: string,
+	checked: boolean,
+	count: number,
+	onchange: (() => void) | undefined,
+	disabled = false
+)}
 	<label
-		class="flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-[13px] text-ink hover:bg-surface-hover"
+		class="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-[13px] {disabled
+			? 'cursor-default text-muted'
+			: 'cursor-pointer text-ink hover:bg-surface-hover'}"
 	>
-		<input type="checkbox" {checked} {onchange} class="size-3.5 accent-accent-fill" />
+		<input
+			type="checkbox"
+			{checked}
+			{onchange}
+			{disabled}
+			class="size-3.5 shrink-0 accent-accent-fill"
+		/>
 		<span class="flex-1">{label}</span>
 		<span class="text-[11.5px] text-faint tabular-nums">{count}</span>
 	</label>
@@ -100,50 +123,75 @@
 	{#if open}
 		<div
 			id="filters-panel"
-			class="absolute top-full right-0 z-30 mt-2 w-[min(320px,calc(100vw-2rem))] rounded-lg border border-line bg-surface p-2 shadow-[0_12px_32px_-16px_rgb(0_0_0/0.45)]"
+			style:max-height="min(70dvh, {availableHeight}px)"
+			class="absolute top-full right-0 z-30 mt-2 flex w-[min(320px,calc(100vw-2rem))] flex-col rounded-lg border border-line bg-surface p-2 shadow-[0_12px_32px_-16px_rgb(0_0_0/0.45)]"
 		>
-			{#if platforms.length > 0}
+			<div class="min-h-0 overflow-y-auto overscroll-contain">
+				{#if platforms.length > 0}
+					<fieldset class="mb-2">
+						<legend class="px-2 pb-1 text-[11px] tracking-[0.08em] text-faint uppercase">
+							Platform
+						</legend>
+						{#each platforms as platform (platform)}
+							{@render box(
+								PLATFORM_LABEL[platform],
+								filters.platforms.includes(platform),
+								countFor({ platforms: [platform] }),
+								() => (filters.platforms = toggle(filters.platforms, platform))
+							)}
+						{/each}
+					</fieldset>
+				{/if}
+
 				<fieldset class="mb-2">
-					<legend class="px-2 pb-1 text-[11px] tracking-[0.08em] text-faint uppercase">
-						Platform
-					</legend>
-					{#each platforms as platform (platform)}
+					<legend class="px-2 pb-1 text-[11px] tracking-[0.08em] text-faint uppercase"
+						>Pricing</legend
+					>
+					{#each Pricing.options as pricing (pricing)}
 						{@render box(
-							PLATFORM_LABEL[platform],
-							filters.platforms.includes(platform),
-							countFor({ platforms: [platform] }),
-							() => (filters.platforms = toggle(filters.platforms, platform))
+							PRICING_LABEL[pricing],
+							filters.pricing.includes(pricing),
+							countFor({ pricing: [pricing] }),
+							() => (filters.pricing = toggle(filters.pricing, pricing))
 						)}
 					{/each}
 				</fieldset>
-			{/if}
 
-			<fieldset class="mb-2">
-				<legend class="px-2 pb-1 text-[11px] tracking-[0.08em] text-faint uppercase">Pricing</legend
-				>
-				{#each Pricing.options as pricing (pricing)}
-					{@render box(
-						PRICING_LABEL[pricing],
-						filters.pricing.includes(pricing),
-						countFor({ pricing: [pricing] }),
-						() => (filters.pricing = toggle(filters.pricing, pricing))
-					)}
-				{/each}
-			</fieldset>
+				<fieldset class="mb-2">
+					<legend class="px-2 pb-1 text-[11px] tracking-[0.08em] text-faint uppercase"
+						>Source</legend
+					>
+					{#each CODES as code (code)}
+						{@render box(
+							CODE_LABEL[code],
+							filters.code.includes(code),
+							countFor({ code: [code] }),
+							() => (filters.code = toggle(filters.code, code))
+						)}
+					{/each}
+				</fieldset>
 
-			<fieldset>
-				<legend class="px-2 pb-1 text-[11px] tracking-[0.08em] text-faint uppercase">Source</legend>
-				{#each CODES as code (code)}
-					{@render box(
-						CODE_LABEL[code],
-						filters.code.includes(code),
-						countFor({ code: [code] }),
-						() => (filters.code = toggle(filters.code, code))
-					)}
-				{/each}
-			</fieldset>
+				<fieldset>
+					<legend class="px-2 pb-1 text-[11px] tracking-[0.08em] text-faint uppercase"
+						>Language</legend
+					>
+					{@render box(LANGUAGE_LABEL.en, true, countFor({ languages: [] }), undefined, true)}
+					{#each languages as language (language)}
+						{#if language !== 'en'}
+							{@render box(
+								LANGUAGE_LABEL[language],
+								filters.languages.includes(language),
+								countFor({ languages: [language] }),
+								() => (filters.languages = toggle(filters.languages, language))
+							)}
+						{/if}
+					{/each}
+				</fieldset>
+			</div>
 
-			<div class="mt-2 flex items-center justify-between border-t border-line px-2 pt-2.5 pb-1">
+			<div
+				class="mt-2 flex shrink-0 items-center justify-between border-t border-line px-2 pt-2.5 pb-1"
+			>
 				<p class="text-[12.5px] text-faint tabular-nums" aria-live="polite">
 					{shown} of {total} tools
 				</p>

@@ -22,6 +22,7 @@ const tool = (over: Partial<Tool>): Tool => ({
 	alsoIn: [],
 	tags: [],
 	platforms: ['web'],
+	languages: ['en'],
 	pricing: 'free',
 	openSource: false,
 	official: false,
@@ -43,6 +44,7 @@ const tools = [
 		category: 'trade',
 		tags: ['overlay'],
 		platforms: ['windows', 'linux'],
+		languages: ['en', 'de', 'fr'],
 		openSource: true
 	}),
 	tool({
@@ -51,6 +53,7 @@ const tools = [
 		games: ['poe1', 'poe2'],
 		category: 'build-planning',
 		platforms: ['windows'],
+		languages: ['en', 'ja'],
 		pricing: 'paid',
 		openSource: true
 	}),
@@ -100,6 +103,20 @@ describe('filterTools', () => {
 		expect(ids(filterTools(tools, { ...EMPTY_FILTERS, code: ['open'] }))).toEqual(['a', 'b']);
 		expect(ids(filterTools(tools, { ...EMPTY_FILTERS, code: ['closed'] }))).toEqual(['c']);
 	});
+	it('matches any chosen additional language without including English-only tools', () => {
+		expect(ids(filterTools(tools, { ...EMPTY_FILTERS, languages: ['de'] }))).toEqual(['a']);
+		expect(ids(filterTools(tools, { ...EMPTY_FILTERS, languages: ['de', 'ja'] }))).toEqual([
+			'a',
+			'b'
+		]);
+		expect(filterTools(tools, { ...EMPTY_FILTERS, languages: ['ko'] })).toEqual([]);
+	});
+	it('combines languages with the other filters', () => {
+		expect(
+			ids(filterTools(tools, { ...EMPTY_FILTERS, languages: ['de', 'ja'], pricing: ['paid'] }))
+		).toEqual(['b']);
+		expect(filterTools(tools, { ...EMPTY_FILTERS, languages: ['de'], game: 'poe2' })).toEqual([]);
+	});
 	it('requires every set to match', () => {
 		expect(
 			ids(
@@ -142,9 +159,10 @@ describe('activeFilterCount', () => {
 				game: null,
 				platforms: ['windows', 'linux'],
 				pricing: ['free'],
-				code: []
+				code: [],
+				languages: ['de', 'ja']
 			})
-		).toBe(3);
+		).toBe(5);
 	});
 });
 
@@ -161,15 +179,17 @@ describe('search params', () => {
 			game: 'poe2',
 			platforms: ['windows', 'linux'],
 			pricing: ['free', 'freemium'],
-			code: ['closed']
+			code: ['closed'],
+			languages: ['de', 'ja']
 		};
 		const p = toSearchParams({
 			...f,
 			platforms: ['linux', 'windows'],
-			pricing: ['freemium', 'free']
+			pricing: ['freemium', 'free'],
+			languages: ['ja', 'de']
 		});
 		expect(p.toString()).toBe(
-			'game=poe2&platform=windows%2Clinux&price=free%2Cfreemium&code=closed'
+			'game=poe2&platform=windows%2Clinux&price=free%2Cfreemium&code=closed&language=de%2Cja'
 		);
 		expect(fromSearchParams(p)).toEqual(f);
 	});
@@ -180,8 +200,18 @@ describe('search params', () => {
 
 	it('drops values that are not valid options and duplicates', () => {
 		const p = new URLSearchParams(
-			'game=poe3&platform=windows,amiga,windows&price=cheap&code=maybe'
+			'game=poe3&platform=windows,amiga,windows&price=cheap&code=maybe&language=en,unknown,de,de'
 		);
-		expect(fromSearchParams(p)).toEqual({ ...EMPTY_FILTERS, platforms: ['windows'] });
+		expect(fromSearchParams(p)).toEqual({
+			...EMPTY_FILTERS,
+			platforms: ['windows'],
+			languages: ['de']
+		});
+	});
+	it('treats English alone as the default view', () => {
+		const filters = fromSearchParams(new URLSearchParams('language=en'));
+		expect(filters).toEqual(EMPTY_FILTERS);
+		expect(toSearchParams(filters).toString()).toBe('');
+		expect(activeFilterCount(filters)).toBe(0);
 	});
 });

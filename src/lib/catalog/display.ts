@@ -1,4 +1,4 @@
-import type { Game, Tool } from './schema';
+import type { Game, Language, Tool } from './schema';
 
 /** Leading noise that would make half the directory share a monogram. */
 const PREFIXES = [
@@ -72,6 +72,18 @@ export const PLATFORM_LABEL = {
 	ios: 'iOS'
 } as const;
 export const PRICING_LABEL = { free: 'Free', freemium: 'Freemium', paid: 'Paid' } as const;
+export const LANGUAGE_LABEL = {
+	en: 'English',
+	de: 'Deutsch (German)',
+	es: 'Español (Spanish)',
+	fr: 'Français (French)',
+	'pt-BR': 'Português (Brasil)',
+	ru: 'Русский (Russian)',
+	th: 'ไทย (Thai)',
+	ja: '日本語 (Japanese)',
+	ko: '한국어 (Korean)',
+	'zh-Hant': '繁體中文 (Traditional Chinese)'
+} as const satisfies Record<Language, string>;
 export const STATUS_LABEL = {
 	active: 'Active',
 	unmaintained: 'Unmaintained',

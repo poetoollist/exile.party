@@ -69,6 +69,7 @@ The catalogue lives in [`tools/`](tools). Adding a tool is one pull request with
 | `alsoIn`       | no       | more ids from `tools/categories.yaml` the tool is also listed under; must not repeat `category`     |
 | `tags`         | no       | kebab-case, used by search                                                                          |
 | `platforms`    | yes      | `windows`, `macos`, `linux`, `web`, `android`, `ios`                                                |
+| `languages`    | no       | additional languages: `de`, `es`, `fr`, `pt-BR`, `ru`, `th`, `ja`, `ko`, `zh-Hant`; English (`en`) is always included |
 | `pricing`      | yes      | `free`, `freemium`, `paid`                                                                          |
 | `openSource`   | yes      | stated outright, so a missing repo link never reads as proprietary                                  |
 | `source`       | no       | repository URL when different from `url`; only valid when `openSource` is true                      |
