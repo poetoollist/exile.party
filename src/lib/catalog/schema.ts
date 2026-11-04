@@ -8,6 +8,18 @@ export const Game = z.enum(['poe1', 'poe2']);
 export const Status = z.enum(['active', 'unmaintained', 'dead']);
 export const Pricing = z.enum(['free', 'freemium', 'paid']);
 export const Platform = z.enum(['windows', 'macos', 'linux', 'web', 'android', 'ios']);
+export const Language = z.enum([
+	'en',
+	'de',
+	'es',
+	'fr',
+	'pt-BR',
+	'ru',
+	'th',
+	'ja',
+	'ko',
+	'zh-Hant'
+]);
 
 /** Id of the virtual "Start here" section the directory leads with. `tools.yaml` cannot define a category with it. */
 export const START_HERE_ID = 'start-here';
@@ -68,6 +80,11 @@ const ToolMetadataObject = z.strictObject({
 	rank: z.record(id, z.number().int().positive()).optional(),
 	tags: z.array(z.string().regex(kebab)).default([]),
 	platforms: z.array(Platform).nonempty(),
+	/** English is supported by every tool; metadata only needs to list additional languages. */
+	languages: z
+		.array(Language)
+		.default(['en'])
+		.transform((languages) => Language.options.filter((l) => l === 'en' || languages.includes(l))),
 	pricing: Pricing,
 	/** Stated explicitly rather than inferred from `source`, so a missing repo link is never read as proprietary. */
 	openSource: z.boolean(),
@@ -203,6 +220,7 @@ export type Game = z.infer<typeof Game>;
 export type Pricing = z.infer<typeof Pricing>;
 export type Status = z.infer<typeof Status>;
 export type Platform = z.infer<typeof Platform>;
+export type Language = z.infer<typeof Language>;
 export type Video = z.infer<typeof Video>;
 export type Tool = z.infer<typeof Tool>;
 export type ToolMetadata = z.infer<typeof ToolMetadata>;

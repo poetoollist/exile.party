@@ -1,6 +1,7 @@
 <script lang="ts">
 	import {
 		GAME_LABEL,
+		LANGUAGE_LABEL,
 		PLATFORM_LABEL,
 		PRICING_LABEL,
 		STATUS_LABEL,
@@ -98,6 +99,9 @@
 
 	{@render row('Platforms')}
 	<dd class="text-ink">{tool.platforms.map((p) => PLATFORM_LABEL[p]).join(', ')}</dd>
+
+	{@render row('Languages')}
+	<dd class="text-ink">{tool.languages.map((language) => LANGUAGE_LABEL[language]).join(', ')}</dd>
 
 	{@render row('Pricing')}
 	<dd class="text-ink">{PRICING_LABEL[tool.pricing]}</dd>

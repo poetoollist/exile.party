@@ -31,6 +31,7 @@ describe('toolYaml', () => {
 			alsoIn: ['crafting'],
 			tags: ['x'],
 			platforms: ['web'],
+			languages: ['en', 'de', 'ja'],
 			pricing: 'free',
 			openSource: true,
 			source: 'https://github.com/t/t',
@@ -63,6 +64,9 @@ tags:
   - x
 platforms:
   - web
+languages:
+  - de
+  - ja
 pricing: free
 openSource: true
 source: https://github.com/t/t
@@ -96,6 +100,7 @@ videos:
 			alsoIn: [],
 			tags: [],
 			platforms: ['web'],
+			languages: ['en'],
 			pricing: 'free',
 			openSource: false,
 			official: false,
@@ -164,6 +169,7 @@ describe('prettier agrees with the serializer', () => {
 			alsoIn: [],
 			tags: [],
 			platforms: ['web'],
+			languages: ['en'],
 			pricing: 'free',
 			openSource: false,
 			official: false,

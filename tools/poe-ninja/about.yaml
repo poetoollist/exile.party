@@ -13,6 +13,16 @@ tags:
   - build-stats
 platforms:
   - web
+languages:
+  - de
+  - es
+  - fr
+  - pt-BR
+  - ru
+  - th
+  - ja
+  - ko
+  - zh-Hant
 pricing: free
 openSource: false
 editorsPick: true

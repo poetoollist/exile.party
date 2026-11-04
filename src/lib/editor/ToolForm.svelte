@@ -1,10 +1,17 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
-	import { GAME_LABEL, PLATFORM_LABEL, PRICING_LABEL, STATUS_LABEL } from '$lib/catalog/display';
+	import {
+		GAME_LABEL,
+		LANGUAGE_LABEL,
+		PLATFORM_LABEL,
+		PRICING_LABEL,
+		STATUS_LABEL
+	} from '$lib/catalog/display';
 	import { toolId } from '$lib/catalog/id';
 	import { messagesAt, zodIssues, type Issue } from '$lib/catalog/issues';
 	import {
 		Game,
+		Language,
 		Platform,
 		Pricing,
 		START_HERE_ID,
@@ -293,6 +300,29 @@
 					{/each}
 				</div>
 			</Field>
+			<div class="sm:col-span-2">
+				<Field
+					label="Languages"
+					hint="English is supported by every tool."
+					issues={at('languages')}
+				>
+					<div class="flex flex-wrap gap-x-4 gap-y-1 py-1.5 text-[13.5px]">
+						{#each Language.options as language (language)}
+							<label class="flex items-center gap-1.5">
+								<input
+									type="checkbox"
+									class={CHECK}
+									checked={language === 'en' || draft.languages.includes(language)}
+									disabled={language === 'en'}
+									onchange={() =>
+										(draft.languages = toggle(draft.languages, language, Language.options))}
+								/>
+								{LANGUAGE_LABEL[language]}
+							</label>
+						{/each}
+					</div>
+				</Field>
+			</div>
 			<Field
 				label="Website"
 				id="url"

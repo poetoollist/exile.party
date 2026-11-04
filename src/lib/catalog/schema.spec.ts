@@ -19,10 +19,19 @@ describe('Tool', () => {
 	it('accepts a minimal valid entry and applies defaults', () => {
 		const t = Tool.parse(valid);
 		expect(t.tags).toEqual([]);
+		expect(t.languages).toEqual(['en']);
 		expect(t.official).toBe(false);
 		expect(t.editorsPick).toBe(false);
 		expect(t.newPlayer).toBe(false);
 		expect(t.byMaintainer).toBe(false);
+	});
+	it('always includes English and normalizes additional languages in schema order', () => {
+		expect(Tool.parse({ ...valid, languages: [] }).languages).toEqual(['en']);
+		expect(Tool.parse({ ...valid, languages: ['ja', 'de', 'de'] }).languages).toEqual([
+			'en',
+			'de',
+			'ja'
+		]);
 	});
 
 	it.each([
@@ -30,6 +39,7 @@ describe('Tool', () => {
 		['http url', { ...valid, url: 'http://example.com' }],
 		['bad id', { ...valid, id: 'Example Tool' }],
 		['empty games', { ...valid, games: [] }],
+		['unknown language', { ...valid, languages: ['unknown'] }],
 		['bad date', { ...valid, lastVerified: '2026-13-45' }],
 		['urls key not in games', { ...valid, urls: { poe2: 'https://example.com/2' } }],
 		['sources key not in games', { ...valid, sources: { poe2: 'https://example.com/2' } }],
