@@ -1,0 +1,12 @@
+name: Atlas Jewel NaB
+description: Calculates Path of Exile Timeless Jewel outcomes and shares seed-specific passive changes.
+url: https://timelessjewel.wiki/
+games: [poe1]
+category: build-planning
+tags: [timeless-jewel, passive-tree, calculator]
+platforms: [web]
+pricing: free
+openSource: false
+status: active
+lastVerified: 2026-11-25
+
